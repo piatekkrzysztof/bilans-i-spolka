@@ -75,18 +75,18 @@ jest nieosiągalny bez zmiany frameworka. Budżet w CI (`scripts/check-bundle.mj
 (170 kB dla `/`) i - co ważniejsze - kodu własnego: ~23 kB ponad framework na stronie głównej.
 
 ### ADR-010: Fonty pod LCP na mobile
-Pierwsza wersja (Newsreader zmienny z osią `opsz` i kursywą, Inter z `latin-ext`) preloadowała 6 plików, ok. 590 kB -
-na łączu mobilnym to sekundy przed pierwszym renderem. Teraz: Newsreader statyczny 500 (38 kB, latin + latin-ext),
-kursywa (tylko „&” i monogramy) bez preloadu, Inter preloadowany tylko w podzbiorze łacińskim (48 kB);
-polskie znaki z `latin-ext` dociągają się po `unicode-range` bez blokowania (`font-display: swap`,
-metryki fallbacku trzymają CLS na 0). Preload fontów: 85 kB.
+Pierwsza wersja (Newsreader zmienny z osią `opsz` i kursywą, Inter z `latin-ext`) preloadowała 6 plików, ok. 590 kB.
+Druga (statyczne wagi z Google Fonts) zeszła do 85 kB preloadu, ale polskie znaki siedziały w osobnych plikach
+`latin-ext`, które przeglądarka odkrywa dopiero po sparsowaniu CSS - druga runda pobrań, a symulacja Lighthouse
+(Lantern, ta sama co w PageSpeed Insights) liczyła ją do LCP: 3,5 s przy obserwowanym LCP 86 ms.
+
+Teraz `scripts/build-fonts.py` robi z plików google/fonts (OFL, licencje w `src/app/fonts`) statyczne instancje
+i podzbiory: łacina + polskie znaki + typografia strony, jeden plik na krój. Cztery pliki (Inter 400 i 500,
+Newsreader 500, kursywa tylko z literami i „&”) to 87 kB, wszystkie preloadowane równolegle z CSS.
+Znak spoza podzbioru (np. z przyszłej treści w CMS) wyrenderuje się fontem zapasowym - wtedy dopisać go do listy.
 
 Pomiar lokalny na maszynie z antywirusem przechwytującym HTTP (wstrzyknięty skrypt, zdjęta kompresja) jest
-niemiarodajny - wynik wiążący daje Lighthouse CI na GitHub Actions i PageSpeed Insights po wdrożeniu.
-W czystym Chromium: FCP 184 ms, 71 ms wykonania skryptów na stronie głównej.
-Lighthouse CI (GitHub Actions, mobile, mediana z 5 przebiegów): wydajność 99 na `/`, `/wycena` i `/ksef`,
-LCP 1,6 s, TBT 60-70 ms, CLS ≤ 0,023; dostępność, Best Practices i SEO po 100 (bez audytu HTTPS, bo serwer
-w CI to HTTP na localhost).
+niemiarodajny - wiążący jest Lighthouse CI na GitHub Actions i PageSpeed Insights po wdrożeniu.
 
 ## Co zmienić przy wzroście
 

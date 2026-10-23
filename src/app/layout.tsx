@@ -1,36 +1,36 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Newsreader } from 'next/font/google'
+import localFont from 'next/font/local'
 import Script from 'next/script'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
 import { siteUrl, umami } from '@/lib/site'
 import './globals.css'
 
-// Fonty to największy koszt pierwszego renderu na mobile (wersja zmienna z osią opsz i kursywą = ~590 kB preloadu).
-// Dlatego statyczne wagi, których naprawdę używamy, a kursywa (tylko „&” i monogramy) bez preloadu.
+// Własne podzbiory (scripts/build-fonts.py): statyczne wagi, łacina + polskie znaki w jednym pliku na krój.
+// Wszystkie cztery pliki (87 kB) ładują się równolegle z CSS - bez drugiej rundy pobrań po latin-ext (ADR-010).
 // Fallback metrics (adjustFontFallback) trzyma CLS przy zamianie fontu.
-const newsreader = Newsreader({
+const newsreader = localFont({
   variable: '--font-newsreader',
-  subsets: ['latin', 'latin-ext'],
-  weight: '500',
+  src: [{ path: './fonts/newsreader-500.woff2', weight: '500', style: 'normal' }],
   display: 'swap',
+  adjustFontFallback: 'Times New Roman',
 })
 
-const newsreaderItalic = Newsreader({
+const newsreaderItalic = localFont({
   variable: '--font-newsreader-italic',
-  subsets: ['latin', 'latin-ext'],
-  weight: '500',
-  style: 'italic',
+  src: [{ path: './fonts/newsreader-500-italic.woff2', weight: '500', style: 'italic' }],
   display: 'swap',
-  preload: false,
+  adjustFontFallback: 'Times New Roman',
 })
 
-// `subsets` w next/font = co preloadować. Inter jest zmienny (130 kB z latin-ext), więc z góry tylko łacina;
-// latin-ext z polskimi znakami dociąga się po unicode-range, nie blokując pierwszego renderu (swap).
-const inter = Inter({
+const inter = localFont({
   variable: '--font-inter',
-  subsets: ['latin'],
+  src: [
+    { path: './fonts/inter-400.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/inter-500.woff2', weight: '500', style: 'normal' },
+  ],
   display: 'swap',
+  adjustFontFallback: 'Arial',
 })
 
 export const metadata: Metadata = {

@@ -73,7 +73,6 @@
     font-family: var(--font-sans);
     font-size: var(--text-base);
     line-height: 1.65;
-    font-feature-settings: 'cv11', 'ss01';
   }
 
   h1, h2, h3 {
