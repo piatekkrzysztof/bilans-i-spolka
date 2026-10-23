@@ -1,0 +1,5 @@
+# Końce linii LF w repozytorium niezależnie od systemu (CI działa na Linuksie).
+* text=auto eol=lf
+*.png binary
+*.ico binary
+*.woff2 binary

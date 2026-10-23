@@ -1,0 +1,56 @@
+{
+  "name": "bilans-i-spolka",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Bilans & Spółka - koncepcyjna strona biura rachunkowego z konfiguratorem wyceny, porównywarką form opodatkowania i automatyzacją od wyceny do umowy (SM-art).",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "analyze": "ANALYZE=true next build",
+    "check:bundle": "node scripts/check-bundle.mjs",
+    "check": "eslint . && next typegen && tsc --noEmit && vitest run"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^6.0.0",
+    "@radix-ui/react-dialog": "^1.3.1",
+    "@radix-ui/react-radio-group": "^1.5.1",
+    "@sanity/client": "^8.10.1",
+    "@supabase/supabase-js": "^2.118.0",
+    "lucide-react": "^1.61.0",
+    "motion": "^14.5.0",
+    "next": "16.4.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-hook-form": "^7.90.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@next/bundle-analyzer": "^16.4.2",
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.2",
+    "schema-dts": "^2.1.0",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^5.0.5"
+  },
+  "packageManager": "pnpm@12.7.0"
+}
