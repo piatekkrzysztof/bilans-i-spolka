@@ -62,6 +62,8 @@ tests/          testy jednostkowe potoku leadów i e2e
   porównywarka, scoring, kodek URL, potok leadów (walidacja, duplikat, Turnstile, 429, podpis i awaria webhooka).
 - 33 testy e2e, w tym axe (WCAG 2.2 AA) na 9 stronach i obsługa konfiguratora wyłącznie klawiaturą.
 - Cena ogłaszana przez `aria-live`, segmentowe przyciski jako grupa radio ze strzałkami, widoczny focus.
+- Lighthouse CI (mobile, rzeczywiste dławienie, mediana z 5 przebiegów): wydajność 99, dostępność, Best Practices
+  i SEO po 100, LCP 1,6 s. PageSpeed Insights (symulacja) pokaże LCP ok. 2,7 s - dlaczego: [ADR-011](docs/ARCHITECTURE.md).
 
 ## Przed publikacją
 

@@ -86,7 +86,30 @@ Newsreader 500, kursywa tylko z literami i „&”) to 87 kB, wszystkie preloado
 Znak spoza podzbioru (np. z przyszłej treści w CMS) wyrenderuje się fontem zapasowym - wtedy dopisać go do listy.
 
 Pomiar lokalny na maszynie z antywirusem przechwytującym HTTP (wstrzyknięty skrypt, zdjęta kompresja) jest
-niemiarodajny - wiążący jest Lighthouse CI na GitHub Actions i PageSpeed Insights po wdrożeniu.
+niemiarodajny - wiążący jest Lighthouse CI na GitHub Actions (ADR-011).
+
+### ADR-011: LCP mierzony z rzeczywistym dławieniem, wynik PSI znany i opisany
+Lighthouse ma dwie metody dławienia. **Symulacja (Lantern)** - domyślna, ta sama co w PageSpeed Insights - mierzy
+stronę bez dławienia i przelicza wynik na wolne łącze z modelu zależności. **Devtools** naprawdę spowalnia
+łącze (slow 4G: 150 ms RTT, 1,6 Mb/s) i CPU (×4) i mierzy to, co się wydarzyło.
+
+Elementem LCP jest akapit w hero, malowany w tej samej klatce co FCP. Na szybkim runnerze ta klatka przychodzi po
+pobraniu skryptów (obserwowane FCP = LCP = 100 ms, skrypty gotowe w 58 ms), więc Lantern wlicza do szacowanego LCP
+cały JavaScript pobrany przed nią - ok. 166 kB, z czego ~135 kB to React DOM i runtime Next 16. Tekstu do
+wyświetlenia ten JS nie potrzebuje: HTML jest prerenderowany, CSS i fonty przychodzą równolegle.
+
+| CI, mobile, mediana z 5 przebiegów | `/` | `/wycena` | `/ksef` |
+| --- | --- | --- | --- |
+| LCP, symulacja (jak w PSI) | 2,9 s | 2,6 s | 2,7 s |
+| FCP, symulacja | 0,9 s | - | - |
+| Wydajność, symulacja | 95 | ≥ 95 | ≥ 95 |
+| LCP, rzeczywiste dławienie (bramka CI) | 1,6 s | 1,6 s | 1,6 s |
+| Wydajność, rzeczywiste dławienie | 99 | 99 | 99 |
+
+Decyzja (z właścicielem projektu): bramka CI mierzy LCP z rzeczywistym dławieniem, cel 1,8 s z planu zostaje.
+PageSpeed Insights po wdrożeniu pokaże LCP ok. 2,6-2,9 s w danych laboratoryjnych - to oczekiwane i opisane tutaj,
+nie regresja. Sam framework to ~135 kB z tych 166 kB, więc zejście do 1,8 s w symulacji wymagałoby innego
+frameworka niż Next.js. Kiedy strona zbierze ruch, rozstrzygające będą dane z terenu (CrUX), nie laboratorium.
 
 ## Co zmienić przy wzroście
 
