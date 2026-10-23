@@ -1,4 +1,5 @@
 // Lighthouse CI: mobile, 5 przebiegów (mediana), progi z planu - 95 w każdej kategorii, LCP < 1,8 s, CLS < 0,05.
+// Pomiar z rzeczywistym dławieniem (slow 4G, CPU ×4), nie symulacją Lantern - powód i wynik PSI w ADR-011.
 module.exports = {
   ci: {
     collect: {
@@ -8,6 +9,7 @@ module.exports = {
       numberOfRuns: 5,
       settings: {
         formFactor: 'mobile',
+        throttlingMethod: 'devtools',
         screenEmulation: { mobile: true, width: 412, height: 823, deviceScaleFactor: 1.75 },
         // Serwer w CI to HTTP na localhost; produkcja (Vercel) działa po HTTPS z HSTS z next.config.ts.
         skipAudits: ['is-on-https'],
