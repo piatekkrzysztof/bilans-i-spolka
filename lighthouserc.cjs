@@ -6,7 +6,12 @@ module.exports = {
       startServerReadyPattern: 'Ready',
       url: ['http://localhost:3320/', 'http://localhost:3320/wycena', 'http://localhost:3320/ksef'],
       numberOfRuns: 5,
-      settings: { preset: 'perf', formFactor: 'mobile', screenEmulation: { mobile: true, width: 412, height: 823, deviceScaleFactor: 1.75 } },
+      settings: {
+        formFactor: 'mobile',
+        screenEmulation: { mobile: true, width: 412, height: 823, deviceScaleFactor: 1.75 },
+        // Serwer w CI to HTTP na localhost; produkcja (Vercel) działa po HTTPS z HSTS z next.config.ts.
+        skipAudits: ['is-on-https'],
+      },
     },
     assert: {
       assertions: {

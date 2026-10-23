@@ -84,6 +84,9 @@ metryki fallbacku trzymają CLS na 0). Preload fontów: 85 kB.
 Pomiar lokalny na maszynie z antywirusem przechwytującym HTTP (wstrzyknięty skrypt, zdjęta kompresja) jest
 niemiarodajny - wynik wiążący daje Lighthouse CI na GitHub Actions i PageSpeed Insights po wdrożeniu.
 W czystym Chromium: FCP 184 ms, 71 ms wykonania skryptów na stronie głównej.
+Lighthouse CI (GitHub Actions, mobile, mediana z 5 przebiegów): wydajność 99 na `/`, `/wycena` i `/ksef`,
+LCP 1,6 s, TBT 60-70 ms, CLS ≤ 0,023; dostępność, Best Practices i SEO po 100 (bez audytu HTTPS, bo serwer
+w CI to HTTP na localhost).
 
 ## Co zmienić przy wzroście
 
