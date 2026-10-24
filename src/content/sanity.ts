@@ -77,7 +77,7 @@ export const QUERIES = {
     "flatRates": flatRates[]{ "id": id.current, label, "rate": ${frac('rate')} }
   }`,
   siteSettings: `*[_type == "siteSettings"][0]`,
-  team: `*[_type == "teamMember"] | order(priority asc){ ..., ${slug}, "photo": photo${image} }`,
+  team: `*[_type == "teamMember"] | order(orderRank asc){ ..., ${slug}, "photo": photo${image} }`,
   services: `*[_type == "service"] | order(orderRank asc){ ..., ${slug} }`,
   articles: `*[_type == "article"]{ ..., ${slug}, "authorSlug": author->slug.current }`,
   districts: `*[_type == "district"]{ ..., ${slug}, "advisorSlug": advisor->slug.current }`,

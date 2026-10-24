@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "sanity dev",
     "build": "sanity build",
-    "deploy": "sanity deploy"
+    "deploy": "sanity deploy",
+    "typecheck": "tsc --noEmit",
+    "validate": "sanity schema validate"
   },
   "dependencies": {
     "@sanity/vision": "^6.20.0",
