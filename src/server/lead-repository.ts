@@ -115,10 +115,13 @@ export type LeadStore = 'supabase' | 'memory' | 'unconfigured'
 /**
  * Pamięć tylko w `next dev` albo po jawnym `LEAD_STORE=memory`. Build produkcyjny bez Supabase
  * nie może po cichu „przyjmować” zgłoszeń, które znikną przy restarcie (ADR-005).
+ * Jawne `LEAD_STORE=memory` wygrywa z kluczami Supabase: e2e na lokalnym buildzie czyta `.env.local`
+ * i bez tego zapisywało testowe leady do produkcyjnej bazy.
  */
 export function resolveLeadStore(env: { SUPABASE_URL?: string; SUPABASE_SERVICE_ROLE_KEY?: string; LEAD_STORE?: string }, production: boolean): LeadStore {
+  if (env.LEAD_STORE === 'memory') return 'memory'
   if (env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY) return 'supabase'
-  if (!production || env.LEAD_STORE === 'memory') return 'memory'
+  if (!production) return 'memory'
   return 'unconfigured'
 }
 

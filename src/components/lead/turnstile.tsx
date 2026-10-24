@@ -14,6 +14,12 @@ declare global {
 
 const SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
 
+/**
+ * Co widzi użytkownik: `checking` - Cloudflare sprawdza w tle, `interactive` - trzeba zaznaczyć pole,
+ * `ready` - jest token, `failed` - widżet się nie załadował albo zgłosił błąd.
+ */
+export type TurnstileState = 'checking' | 'interactive' | 'ready' | 'failed'
+
 function loadScript(): Promise<void> {
   if (window.turnstile) return Promise.resolve()
   const existing = document.querySelector<HTMLScriptElement>(`script[src="${SCRIPT_SRC}"]`)
@@ -26,16 +32,20 @@ function loadScript(): Promise<void> {
 }
 
 /**
- * Cloudflare Turnstile w trybie „managed” - zwykle bez żadnej interakcji użytkownika.
+ * Cloudflare Turnstile w trybie „managed” - zwykle bez żadnej interakcji użytkownika, czasem z polem do zaznaczenia.
  * Skrypt ładowany dopiero przy otwarciu formularza. Bez klucza (lokalnie, e2e) nic nie renderuje.
  */
-export function Turnstile({ onToken }: { onToken: (token: string) => void }) {
+export function Turnstile({ onToken, onState }: { onToken: (token: string) => void; onState: (state: TurnstileState) => void }) {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!turnstileSiteKey || !ref.current) return
     let widgetId: string | undefined
     let cancelled = false
+    const reset = (state: TurnstileState) => {
+      onToken('')
+      onState(state)
+    }
     loadScript()
       .then(() => {
         if (cancelled || !ref.current || !window.turnstile) return
@@ -43,17 +53,24 @@ export function Turnstile({ onToken }: { onToken: (token: string) => void }) {
           'sitekey': turnstileSiteKey,
           'language': 'pl',
           'appearance': 'interaction-only',
-          'callback': onToken,
-          'expired-callback': () => onToken(''),
-          'error-callback': () => onToken(''),
+          'callback': (token: string) => {
+            onToken(token)
+            onState('ready')
+          },
+          'before-interactive-callback': () => onState('interactive'),
+          'after-interactive-callback': () => onState('checking'),
+          // Wygasły token Cloudflare odświeża sam (refresh-expired: auto), więc wracamy do sprawdzania.
+          'expired-callback': () => reset('checking'),
+          'error-callback': () => reset('failed'),
+          'unsupported-callback': () => reset('failed'),
         })
       })
-      .catch(() => onToken(''))
+      .catch(() => reset('failed'))
     return () => {
       cancelled = true
       if (widgetId) window.turnstile?.remove(widgetId)
     }
-  }, [onToken])
+  }, [onToken, onState])
 
   if (!turnstileSiteKey) return null
   return <div ref={ref} className="min-h-0" />
