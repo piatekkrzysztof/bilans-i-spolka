@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as Dialog from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 import Link from 'next/link'
-import { type ReactNode, useCallback, useId, useState } from 'react'
+import { type ReactNode, useCallback, useId, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { buttonClass } from '@/components/ui/button'
 import { formatPLN } from '@/domain/money'
@@ -17,7 +17,23 @@ import { SITUATION_LABELS, SITUATIONS, START_WHEN, START_WHEN_LABELS } from '@/d
 import { cn } from '@/lib/cn'
 import { type LeadFormValues, type LeadIntent, type LeadResponse, leadFormSchema } from '@/lib/schemas/lead'
 import { demoMode, turnstileSiteKey } from '@/lib/site'
-import { Turnstile } from './turnstile'
+import { Turnstile, type TurnstileState } from './turnstile'
+
+/** Podpowiedź pod widżetem i komunikat przy próbie wysyłki bez tokenu - mówi, co zrobić, a nie tylko „czekaj”. */
+const TURNSTILE_HINT: Record<Exclude<TurnstileState, 'ready'>, { hint: string; blocked: string }> = {
+  checking: {
+    hint: 'Cloudflare sprawdza w tle, czy nie jesteś botem - zwykle kilka sekund.',
+    blocked: 'Weryfikacja antyspamowa trwa dłużej niż zwykle. Jeśli nad przyciskiem pojawi się pole Cloudflare, zaznacz je i wyślij ponownie.',
+  },
+  interactive: {
+    hint: 'Zaznacz pole „Potwierdź, że jesteś człowiekiem” powyżej - bez tego formularz nie zostanie wysłany.',
+    blocked: 'Zaznacz pole „Potwierdź, że jesteś człowiekiem” nad przyciskiem, a potem wyślij ponownie.',
+  },
+  failed: {
+    hint: 'Weryfikacja Cloudflare nie zadziałała. Odśwież stronę albo napisz do nas ze strony kontaktu.',
+    blocked: 'Weryfikacja Cloudflare nie zadziałała. Odśwież stronę albo napisz do nas ze strony kontaktu.',
+  },
+}
 
 const COPY: Record<LeadIntent, { title: string; lead: string; submit: string }> = {
   pdf: {
@@ -49,26 +65,58 @@ function Field({ label, error, children, hint }: { label: string; error?: string
 
 const inputClass = 'h-12 w-full rounded-[3px] border border-rule bg-surface px-3.5 text-base text-ink aria-[invalid=true]:border-alert'
 
+const TURNSTILE_WAIT_MS = 15_000
+
+function waitFor(done: () => boolean, timeoutMs: number): Promise<void> {
+  return new Promise(resolve => {
+    const started = Date.now()
+    const tick = () => (done() || Date.now() - started > timeoutMs ? resolve() : setTimeout(tick, 100))
+    tick()
+  })
+}
+
 export default function LeadDialog({ intent, quote, open, onOpenChange }: { intent: LeadIntent; quote: Quote; open: boolean; onOpenChange: (open: boolean) => void }) {
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
   const [token, setToken] = useState('')
-  const onToken = useCallback((value: string) => setToken(value), [])
+  const [turnstileState, setTurnstileState] = useState<TurnstileState>('checking')
+  // Kopie w refach: wysyłka czeka na token w pętli, a stan Reacta wewnątrz handlera byłby nieaktualny.
+  const tokenRef = useRef('')
+  const turnstileStateRef = useRef<TurnstileState>('checking')
+  const onToken = useCallback((value: string) => {
+    tokenRef.current = value
+    setToken(value)
+  }, [])
+  const onTurnstileState = useCallback((value: TurnstileState) => {
+    turnstileStateRef.current = value
+    setTurnstileState(value)
+  }, [])
   const copy = COPY[intent]
   // Z kluczem Turnstile nie wysyłamy formularza bez tokenu - serwer i tak by go odrzucił (403).
-  const waitingForTurnstile = Boolean(turnstileSiteKey) && !token
+  // Przycisk zostaje aktywny: zablokowany z napisem „weryfikacja…” nie mówił, że trzeba kliknąć pole Cloudflare.
+  const turnstilePending = Boolean(turnstileSiteKey) && !token
+  const pendingState = turnstileState === 'ready' ? 'checking' : turnstileState
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),
     defaultValues: { name: '', email: '', phone: '', message: '', consentMarketing: false },
   })
 
-  const onSubmit = handleSubmit(async values => {
+  // handleSubmit wołany dopiero w zdarzeniu: wysyłka czyta refy, a tych nie wolno dotykać podczas renderu.
+  const send = async (values: LeadFormValues) => {
     setStatus({ kind: 'idle' })
+    if (turnstileSiteKey && !tokenRef.current) {
+      // Sprawdzanie w tle zwykle kończy się w sekundę - czekamy na nie zamiast odsyłać z błędem.
+      await waitFor(() => Boolean(tokenRef.current) || turnstileStateRef.current !== 'checking', TURNSTILE_WAIT_MS)
+      if (!tokenRef.current) {
+        const state = turnstileStateRef.current === 'ready' ? 'checking' : turnstileStateRef.current
+        return setStatus({ kind: 'error', message: TURNSTILE_HINT[state].blocked })
+      }
+    }
     try {
       const response = await fetch('/api/lead', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ ...values, intent, quote: quote.input, turnstileToken: token }),
+        body: JSON.stringify({ ...values, intent, quote: quote.input, turnstileToken: tokenRef.current }),
       })
       if (response.status === 409) return setStatus({ kind: 'error', message: 'Ta wycena już do nas dotarła w ciągu ostatniej doby. Odezwiemy się - nie trzeba wysyłać jej ponownie.' })
       if (response.status === 403) return setStatus({ kind: 'error', message: 'Weryfikacja antyspamowa wygasła. Odśwież stronę i spróbuj ponownie.' })
@@ -79,7 +127,7 @@ export default function LeadDialog({ intent, quote, open, onOpenChange }: { inte
     catch {
       setStatus({ kind: 'error', message: 'Brak połączenia. Twoje dane są w formularzu - spróbuj ponownie za chwilę.' })
     }
-  })
+  }
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -104,7 +152,7 @@ export default function LeadDialog({ intent, quote, open, onOpenChange }: { inte
           {status.kind === 'done' ? (
             <Success response={status.response} intent={intent} />
           ) : (
-            <form onSubmit={onSubmit} noValidate className="mt-6 grid gap-5">
+            <form onSubmit={event => void handleSubmit(send)(event)} noValidate className="mt-6 grid gap-5">
               <p className="text-sm text-ink-muted">{copy.lead}</p>
               {demoMode && (
                 <p className="border-l-2 border-brass bg-surface px-4 py-3 text-sm text-ink">
@@ -168,12 +216,20 @@ export default function LeadDialog({ intent, quote, open, onOpenChange }: { inte
                 </p>
               </div>
 
-              <Turnstile onToken={onToken} />
+              <div className="grid gap-2">
+                <Turnstile onToken={onToken} onState={onTurnstileState} />
+                {turnstilePending && status.kind !== 'error' && (
+                  <p role="status" className={cn('flex items-start gap-2 text-xs leading-relaxed', pendingState === 'checking' ? 'text-ink-muted' : 'font-medium text-ink')}>
+                    {pendingState !== 'checking' && <span aria-hidden="true" className="marker mt-1 shrink-0" />}
+                    {TURNSTILE_HINT[pendingState].hint}
+                  </p>
+                )}
+              </div>
 
               {status.kind === 'error' && <p role="alert" className="border-l-2 border-alert bg-surface px-4 py-3 text-sm text-alert">{status.message}</p>}
 
-              <button type="submit" disabled={isSubmitting || waitingForTurnstile} className={buttonClass('primary', 'w-full')}>
-                {isSubmitting ? 'Wysyłam…' : waitingForTurnstile ? 'Weryfikacja antyspamowa…' : copy.submit}
+              <button type="submit" disabled={isSubmitting} className={buttonClass('primary', 'w-full')}>
+                {isSubmitting ? 'Wysyłam…' : copy.submit}
               </button>
             </form>
           )}

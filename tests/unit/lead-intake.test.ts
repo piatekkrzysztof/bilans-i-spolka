@@ -116,4 +116,8 @@ describe('resolveLeadStore', () => {
     expect(resolveLeadStore({ LEAD_STORE: 'memory' }, true)).toBe('memory')
     expect(resolveLeadStore({ SUPABASE_URL: 'https://x.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'k' }, true)).toBe('supabase')
   })
+
+  it('jawne LEAD_STORE=memory wygrywa z kluczami Supabase (e2e nie pisze do produkcyjnej bazy)', () => {
+    expect(resolveLeadStore({ SUPABASE_URL: 'https://x.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'k', LEAD_STORE: 'memory' }, true)).toBe('memory')
+  })
 })
