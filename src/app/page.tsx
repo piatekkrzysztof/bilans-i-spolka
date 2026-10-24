@@ -240,7 +240,7 @@ export default async function HomePage() {
         <div className="container-page grid gap-10 py-20 lg:grid-cols-[1.5fr_1fr] lg:py-24">
           <div>
             <p className="eyebrow !text-paper">[ 20 min / wideo / bez zobowiązań ]</p>
-            <h2 id="cta" className="mt-5 text-[2.75rem] leading-[0.92] md:text-[4.5rem]">Porozmawiajmy o Twojej firmie<span className="text-signal">.</span></h2>
+            <h2 id="cta" className="mt-5 text-[2.25rem] leading-none sm:text-[2.75rem] md:text-[4.5rem]">Porozmawiajmy o Twojej firmie<span className="text-signal">.</span></h2>
             <p className="mt-6 max-w-xl text-lg text-paper/85">
               Sprawdzimy formę opodatkowania i powiemy, ile dokładnie zapłacisz.
             </p>
