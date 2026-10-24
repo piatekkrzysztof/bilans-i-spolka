@@ -28,3 +28,6 @@ npm-debug.log*
 
 # wygenerowane przez pnpm sanity:seed
 /studio/seed
+
+# lokalny stan Supabase CLI (supabase link)
+/supabase/.temp
