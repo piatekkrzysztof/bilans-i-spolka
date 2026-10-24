@@ -25,6 +25,12 @@ export type ContentTag = (typeof CONTENT_TAGS)[number]
 
 async function load<T>(query: string, fallback: T, params: Record<string, string> = {}): Promise<T> {
   const fromSanity = await sanityFetch<T>(query, params)
+  // Pusta lista z Sanity to prawie zawsze brak dostępu (prywatny dataset bez tokena), a nie celowo pusta treść -
+  // strona bez zespołu i artykułów byłaby gorsza niż dane zapasowe. Głośno w logach, cicho dla odwiedzającego.
+  if (Array.isArray(fromSanity) && fromSanity.length === 0 && Array.isArray(fallback) && fallback.length > 0) {
+    console.warn('[content] Sanity zwróciło pustą listę - używam danych lokalnych. Sprawdź SANITY_API_READ_TOKEN.', query.slice(0, 40))
+    return fallback
+  }
   return fromSanity ?? fallback
 }
 

@@ -18,6 +18,8 @@ function sanityClient(): SanityClient | null {
         // Bufor Next.js jest jedynym cache - CDN Sanity dokładałby drugie opóźnienie po publikacji.
         useCdn: false,
         perspective: 'published',
+        // Dataset jest prywatny - aplikacja czyta tokenem z rolą viewer (tylko odczyt, do odwołania w Sanity).
+        token: process.env.SANITY_API_READ_TOKEN || undefined,
       })
     : null
   return client

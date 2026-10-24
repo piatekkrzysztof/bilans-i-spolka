@@ -7,7 +7,7 @@ import { structure } from './structure'
 export default defineConfig({
   name: 'bilans-i-spolka',
   title: 'Bilans & Spółka',
-  projectId: process.env.SANITY_STUDIO_PROJECT_ID ?? 'zmien-mnie',
+  projectId: process.env.SANITY_STUDIO_PROJECT_ID ?? 'xh2t6pff',
   dataset: process.env.SANITY_STUDIO_DATASET ?? 'production',
   plugins: [structureTool({ structure }), visionTool()],
   schema: {
