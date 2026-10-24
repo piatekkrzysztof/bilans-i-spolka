@@ -47,6 +47,7 @@ export const metadata: Metadata = {
     locale: 'pl_PL',
     siteName: 'Bilans & Spółka',
   },
+  twitter: { card: 'summary_large_image' },
   formatDetection: { telephone: false },
 }
 

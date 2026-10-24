@@ -21,6 +21,8 @@ export function accountingService(site: SiteSettings, district?: District): With
     'name': site.name,
     'description': site.tagline,
     'url': absoluteUrl('/'),
+    'image': absoluteUrl('/opengraph-image'),
+    'logo': absoluteUrl('/opengraph-image'),
     'telephone': site.phone,
     'email': site.email,
     'priceRange': '279-3590 PLN',
