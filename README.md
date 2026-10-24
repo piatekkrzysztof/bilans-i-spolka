@@ -69,7 +69,15 @@ automation/n8n  projekt workflow i kod węzłów (weryfikacja podpisu, notka Cla
 tests/          testy jednostkowe potoku leadów i e2e
 ```
 
-## Jakość
+## Wdrożenie
+
+Vercel, projekt `bilans-i-spolka`, połączony z repo: każdy PR dostaje podgląd, merge do `main` wdraża produkcję.
+
+- Funkcje serwera w Dublinie (`vercel.json`, `dub1`) - obok bazy Supabase w Irlandii i w UE ze względu na RODO.
+- Produkcja: Sanity (token tylko do odczytu), Supabase (`service_role` tylko na serwerze), tryb demo.
+- Podglądy PR: te same treści z Sanity, ale leady w pamięci (`LEAD_STORE=memory`) - nie piszą do produkcyjnej bazy.
+- Turnstile: na razie klucze testowe Cloudflare; przed publikacją podmienić na klucze dla domeny.
+
 
 - 66 testów jednostkowych: cennik (kombinacje, przedziały, niezmienniki na 320 kombinacjach), ZUS 2026 co do grosza,
   porównywarka, scoring, kodek URL, potok leadów (walidacja, duplikat, Turnstile, 429, podpis i awaria webhooka),
