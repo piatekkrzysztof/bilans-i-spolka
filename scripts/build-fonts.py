@@ -38,6 +38,9 @@ FONTS = [
     ("Inter[opsz,wght].ttf", "inter-500.woff2", 500, UNICODES),
     ("Newsreader[opsz,wght].ttf", "newsreader-500.woff2", 500, UNICODES),
     ("Newsreader-Italic[opsz,wght].ttf", "newsreader-500-italic.woff2", 500, ITALIC_UNICODES),
+    # Obrazek do udostępniania (next/og, Satori) nie czyta woff2 - te same podzbiory jako TTF.
+    ("Newsreader[opsz,wght].ttf", "og/newsreader-500.ttf", 500, UNICODES),
+    ("Inter[opsz,wght].ttf", "og/inter-500.ttf", 500, UNICODES),
 ]
 
 
@@ -48,8 +51,9 @@ def build(source: str, target: str, weight: int, unicodes: list[int]) -> None:
     axes["wght"] = weight
     static = instantiateVariableFont(font, axes)
 
+    woff2 = target.endswith(".woff2")
     options = subset.Options()
-    options.flavor = "woff2"
+    options.flavor = "woff2" if woff2 else None
     options.layout_features = ["*"]  # tnum/lnum (kwoty), kern, liga
     options.name_IDs = ["*"]
     options.notdef_outline = True
@@ -57,8 +61,8 @@ def build(source: str, target: str, weight: int, unicodes: list[int]) -> None:
     subsetter.populate(unicodes=unicodes)
     subsetter.subset(static)
 
-    OUT.mkdir(parents=True, exist_ok=True)
-    static.flavor = "woff2"
+    (OUT / target).parent.mkdir(parents=True, exist_ok=True)
+    static.flavor = "woff2" if woff2 else None
     static.save(OUT / target)
     print(f"{target}: {(OUT / target).stat().st_size / 1024:.1f} kB")
 

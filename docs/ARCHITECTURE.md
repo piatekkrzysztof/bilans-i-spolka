@@ -107,8 +107,18 @@ wyświetlenia ten JS nie potrzebuje: HTML jest prerenderowany, CSS i fonty przyc
 | Wydajność, rzeczywiste dławienie | 99 | 99 | 99 |
 
 Decyzja (z właścicielem projektu): bramka CI mierzy LCP z rzeczywistym dławieniem, cel 1,8 s z planu zostaje.
-PageSpeed Insights po wdrożeniu pokaże LCP ok. 2,6-2,9 s w danych laboratoryjnych - to oczekiwane i opisane tutaj,
-nie regresja. Sam framework to ~135 kB z tych 166 kB, więc zejście do 1,8 s w symulacji wymagałoby innego
+PageSpeed Insights pokazuje wyższe LCP w danych laboratoryjnych - to oczekiwane i opisane tutaj, nie regresja.
+
+PageSpeed Insights na produkcji (24.10.2026, mobile, https://bilans-i-spolka.vercel.app):
+
+| | Wydajność | Dostępność | Best Practices | SEO | FCP | LCP | TBT | CLS |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `/` | 98 | 100 | 100 | 100 | 0,9 s | 2,4 s | 10 ms | 0 |
+| `/wycena` | 94 | 100 | 100 | 100 | 0,9 s | 2,9 s | 40 ms | 0 |
+| `/ksef` | 98 | 100 | 100 | 100 | 1,5 s | 2,2 s | 40 ms | 0 |
+
+`/wycena` jest o punkt pod progiem 95: część zależna od parametrów w URL liczy się w funkcji serwera
+(Partial Prerendering), a pierwszy pomiar był jeszcze przed przeniesieniem funkcji do Dublina. Sam framework to ~135 kB z tych 166 kB, więc zejście do 1,8 s w symulacji wymagałoby innego
 frameworka niż Next.js. Kiedy strona zbierze ruch, rozstrzygające będą dane z terenu (CrUX), nie laboratorium.
 
 ## Co zmienić przy wzroście

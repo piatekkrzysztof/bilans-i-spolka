@@ -85,7 +85,10 @@ Vercel, projekt `bilans-i-spolka`, połączony z repo: każdy PR dostaje podglą
 - 33 testy e2e, w tym axe (WCAG 2.2 AA) na 9 stronach i obsługa konfiguratora wyłącznie klawiaturą.
 - Cena ogłaszana przez `aria-live`, segmentowe przyciski jako grupa radio ze strzałkami, widoczny focus.
 - Lighthouse CI (mobile, rzeczywiste dławienie, mediana z 5 przebiegów): wydajność 99, dostępność, Best Practices
-  i SEO po 100, LCP 1,6 s. PageSpeed Insights (symulacja) pokaże LCP ok. 2,7 s - dlaczego: [ADR-011](docs/ARCHITECTURE.md).
+  i SEO po 100, LCP 1,6 s.
+- PageSpeed Insights na produkcji (mobile): `/` 98, `/wycena` 94, `/ksef` 98 - dostępność, Best Practices i SEO po 100,
+  LCP 2,2-2,9 s w symulacji; dlaczego wyższe niż w CI: [ADR-011](docs/ARCHITECTURE.md).
+- Dane strukturalne: walidator schema.org - AccountingService i FAQPage bez błędów i ostrzeżeń.
 
 ## Przed publikacją
 
