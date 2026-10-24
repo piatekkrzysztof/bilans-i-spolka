@@ -8,22 +8,23 @@ import { cn } from '@/lib/cn'
 export function NavLinks({ variant }: { variant: 'bar' | 'sheet' }) {
   const pathname = usePathname()
   return (
-    <ul className={variant === 'bar' ? 'flex items-center gap-7' : 'grid gap-1'}>
-      {NAV.map(item => {
+    <ul className={variant === 'bar' ? 'flex items-stretch' : 'grid border-t-2 border-ink'}>
+      {NAV.map((item, index) => {
         const active = pathname.startsWith(item.match)
         return (
-          <li key={item.href}>
+          <li key={item.href} className={variant === 'bar' ? 'border-l border-ink last:border-r' : 'border-b border-ink'}>
             <Link
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'text-sm transition-colors duration-300',
-                variant === 'bar' ? 'py-2' : 'block border-b border-rule py-3.5 font-serif text-xl',
-                active ? 'text-ledger' : 'text-ink hover:text-ledger',
-                active && variant === 'bar' && 'underline decoration-brass decoration-1 underline-offset-[0.5em]',
+                'flex h-full items-center gap-2 font-mono uppercase tracking-[0.08em] transition-colors duration-150',
+                variant === 'bar' ? 'px-4 text-[0.75rem]' : 'justify-between py-4 text-base',
+                active ? 'bg-ink text-paper' : 'text-ink hover:bg-ink hover:text-paper',
               )}
             >
-              {item.label}
+              {variant === 'sheet' && <span aria-hidden="true" className="text-xs text-ink-muted">0{index + 1}</span>}
+              <span className={variant === 'sheet' ? 'mr-auto' : undefined}>{item.label}</span>
+              {variant === 'sheet' && <span aria-hidden="true">→</span>}
             </Link>
           </li>
         )

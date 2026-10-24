@@ -1,53 +1,59 @@
 @import 'tailwindcss';
 
 /*
- * Design system „spokojna księga”: ciepły papier, zieleń księgi, mosiądz tylko w detalach.
- * Nazwy tokenów z planu (--paper, --ledger...) dostają prefiks --color-, żeby Tailwind wygenerował
- * z nich klasy (bg-paper, text-ledger). Mosiądz nie ma kontrastu dla tekstu - nigdy text-brass.
+ * Design system „druk techniczny” (ADR-012): szwajcarski druk przemysłowy - papier, czarny tusz,
+ * czerwień sygnałowa wyłącznie jako znacznik. Kwoty nigdy nie są czerwone: w księgowości czerwień to strata.
+ *
+ * Nazwy tokenów zostały z pierwszej wersji (ledger, brass...), żeby komponenty nie zmieniały klas:
+ * ledger = tusz (akcje, aktywne stany), brass = czerwień sygnałowa (tylko linie i znaczniki, nigdy tekst).
  */
 @theme {
   --color-*: initial;
-  --color-paper: #faf8f3;
-  --color-surface: #ffffff;
-  --color-ink: #1a1d1b;
-  --color-ink-muted: #5f655f;
-  --color-rule: #e6e2d8;
-  --color-rule-strong: #cfc9bb;
-  --color-ledger: #1f4d3f;
-  --color-ledger-deep: #163a2f;
-  --color-ledger-soft: #e4ede8;
-  --color-brass: #b08a3e;
-  --color-alert: #8a2f1d;
+  --color-paper: #f3f2ee;
+  --color-surface: #fafaf7;
+  --color-ink: #0d0d0d;
+  --color-ink-muted: #474743;
+  --color-rule: #c7c5bd;
+  --color-rule-strong: #0d0d0d;
+  --color-ledger: #0d0d0d;
+  --color-ledger-deep: #000000;
+  --color-ledger-soft: #dedcd4;
+  --color-brass: #e61919;
+  --color-signal: #e61919;
+  /* Ciemniejsza czerwień dla tekstu błędów - kontrast 6:1 na papierze. */
+  --color-alert: #b0130b;
   --color-transparent: transparent;
   --color-current: currentColor;
 
-  --font-serif: var(--font-newsreader), 'Iowan Old Style', Georgia, serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter-text), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter-display), var(--font-inter-text), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, 'Cascadia Mono', monospace;
+  /* „serif” z pierwszej wersji = dane: nazwy, liczby, tytuły kart. */
+  --font-serif: var(--font-mono);
 
-  /* Skala z planu: 14 / 16 / 18 / 24 / 36 / 56 px. */
   --text-xs: 0.8125rem;
-  --text-xs--line-height: 1.5;
+  --text-xs--line-height: 1.45;
   --text-sm: 0.875rem;
-  --text-sm--line-height: 1.6;
+  --text-sm--line-height: 1.55;
   --text-base: 1rem;
-  --text-base--line-height: 1.65;
+  --text-base--line-height: 1.6;
   --text-lg: 1.125rem;
-  --text-lg--line-height: 1.65;
-  --text-xl: 1.5rem;
+  --text-lg--line-height: 1.6;
+  --text-xl: 1.375rem;
   --text-xl--line-height: 1.25;
-  --text-2xl: 2.25rem;
-  --text-2xl--line-height: 1.1;
-  --text-3xl: 3.5rem;
-  --text-3xl--line-height: 1.05;
+  --text-2xl: 2.5rem;
+  --text-2xl--line-height: 1;
+  --text-3xl: 4rem;
+  --text-3xl--line-height: 0.98;
 
-  --container-page: 75rem;
+  --container-page: 80rem;
   --container-prose: 40rem;
 
-  --ease-calm: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --duration-calm: 450ms;
+  --ease-calm: cubic-bezier(0.2, 0, 0, 1);
+  --duration-calm: 250ms;
 
-  --animate-draw: draw 700ms var(--ease-calm) both;
-  --animate-fade-up: fade-up 600ms var(--ease-calm) both;
+  --animate-draw: draw 500ms var(--ease-calm) both;
+  --animate-fade-up: fade-up 400ms var(--ease-calm) both;
 
   @keyframes draw {
     from { transform: scaleX(0); }
@@ -55,12 +61,15 @@
   }
 
   @keyframes fade-up {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: none; }
   }
 }
 
 @layer base {
+  /* Geometria: wyłącznie kąty proste. */
+  *, *::before, *::after { border-radius: 0 !important; }
+
   html {
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
@@ -72,25 +81,37 @@
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-size: var(--text-base);
-    line-height: 1.65;
+    line-height: 1.6;
   }
 
-  h1, h2, h3 {
-    font-family: var(--font-serif);
-    font-weight: 500;
-    letter-spacing: -0.01em;
+  /* Makrotypografia: ciężki grotesk w wersalikach, ciasno. Tylko nagłówki - tekst ciągły zostaje zdaniem. */
+  h1, h2 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.035em;
+    word-spacing: 0.12em;
     text-wrap: balance;
   }
 
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  /* Ciężki krój zjada odstępy między słowami - przy ujemnym trackingu trzeba je oddać. */
+  .font-display { word-spacing: 0.1em; }
+
   p { text-wrap: pretty; }
 
-  ::selection { background: var(--color-ledger-soft); color: var(--color-ledger-deep); }
+  ::selection { background: var(--color-ink); color: var(--color-paper); }
 
-  /* Widoczny focus w kolorze księgi (WCAG 2.2: 2.4.7, 2.4.11). */
+  /* Widoczny focus w czerwieni sygnałowej (WCAG 2.2: 2.4.7, 2.4.11; kontrast 4,4:1 wobec papieru). */
   :focus-visible {
-    outline: 2px solid var(--color-ledger);
-    outline-offset: 3px;
-    border-radius: 2px;
+    outline: 3px solid var(--color-signal);
+    outline-offset: 2px;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -104,38 +125,33 @@
 }
 
 @layer components {
-  /* Kwoty: cyfry tabelaryczne, wyrównanie do prawej - kolumny jak w księdze. */
+  /* Liczby to dane: mono, cyfry tabelaryczne, wyrównane w kolumnach. */
   .num {
-    font-variant-numeric: tabular-nums lining-nums;
-    font-feature-settings: 'tnum', 'lnum';
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums lining-nums slashed-zero;
+    font-feature-settings: 'tnum', 'lnum', 'zero';
   }
 
-  /* Podwójne podkreślenie sumy, jak w bilansie. Rysowane od prawej, w mosiądzu. */
+  /* Podwójne podkreślenie sumy, jak w bilansie - w czerwieni sygnałowej, rysowane od prawej. */
   .double-rule {
     position: relative;
     display: block;
-    height: 5px;
+    height: 7px;
   }
   .double-rule::before,
   .double-rule::after {
     content: '';
     position: absolute;
     inset-inline: 0;
-    height: 1px;
-    background: var(--color-brass);
+    height: 2px;
+    background: var(--color-signal);
     transform-origin: right;
     animation: var(--animate-draw);
   }
   .double-rule::before { top: 0; }
-  .double-rule::after { bottom: 0; animation-delay: 90ms; }
+  .double-rule::after { bottom: 0; animation-delay: 70ms; }
 
-  /* Rubryki księgi: cienkie poziome linie co jedną linię tekstu. */
-  .ruled {
-    background-image: linear-gradient(to bottom, transparent calc(100% - 1px), var(--color-rule) calc(100% - 1px));
-    background-size: 100% 2.5rem;
-  }
-
-  /* Margines księgi: podwójna pionowa linia przy lewej krawędzi dokumentu. */
+  /* Margines formularza: podwójna pionowa linia przy lewej krawędzi dokumentu. */
   .ledger-margin {
     position: relative;
   }
@@ -144,30 +160,41 @@
     position: absolute;
     inset-block: 0;
     left: 1.25rem;
-    width: 4px;
-    border-inline: 1px solid color-mix(in srgb, var(--color-brass) 55%, transparent);
+    width: 6px;
+    border-inline: 2px solid var(--color-signal);
     pointer-events: none;
   }
 
-  /* Kursywa szeryfowa to osobny plik fontu (bez preloadu) - „&” w logo i monogramy. */
-  :where(.font-serif, .font-serif *).italic {
-    font-family: var(--font-newsreader-italic), var(--font-serif);
-  }
-
+  /* Mikrotypografia: etykiety i metadane w mono, wersaliki, szeroko. */
   .eyebrow {
-    font-family: var(--font-sans);
-    font-size: var(--text-xs);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
     font-weight: 500;
+    line-height: 1.3;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-ink-muted);
+    color: var(--color-ink);
+  }
+
+  /* Taśma ostrzegawcza - KSeF, termin ustawowy. Dekoracja, bez treści. */
+  .hazard {
+    background: repeating-linear-gradient(-45deg, var(--color-signal) 0 14px, var(--color-ink) 14px 28px);
+  }
+
+  /* Kwadratowy znacznik (zamiast glifu ■). */
+  .marker {
+    display: inline-block;
+    width: 0.6em;
+    height: 0.6em;
+    background: var(--color-signal);
+    vertical-align: 0.05em;
   }
 
   .link-underline {
     text-decoration-line: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.25em;
-    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: var(--color-signal);
     transition: text-decoration-color var(--duration-calm) var(--ease-calm);
   }
   .link-underline:hover { text-decoration-color: currentColor; }
@@ -183,5 +210,12 @@
 
 @utility section-space {
   padding-block: 5rem;
-  @media (width >= 64rem) { padding-block: 8rem; }
+  @media (width >= 64rem) { padding-block: 7rem; }
+}
+
+/* Makro: nagłówek hero rośnie z ekranem, ale nie łamie słów. */
+@utility text-macro {
+  font-size: clamp(2.5rem, 6.8vw, 6.25rem);
+  /* Ogonki (Ą, Ę) i kreski (Ó, Ś) nie mogą wchodzić na sąsiednie linie - 0,9 było za ciasne. */
+  line-height: 1;
 }

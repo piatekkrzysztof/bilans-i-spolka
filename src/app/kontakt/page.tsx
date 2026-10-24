@@ -30,7 +30,7 @@ export default async function ContactPage() {
 
       <div className="container-page grid gap-16 pb-24 lg:grid-cols-[1.3fr_1fr] lg:pb-32">
         <section id="konsultacja" aria-labelledby="konsultacja-tytul" className="scroll-mt-24">
-          <h2 id="konsultacja-tytul" className="font-serif text-2xl">Kalendarz konsultacji</h2>
+          <h2 id="konsultacja-tytul" className="font-display text-2xl uppercase tracking-[-0.02em]">Kalendarz konsultacji</h2>
           <p className="mt-2 text-ink-muted">Każda księgowa ma własny kalendarz. Link do spotkania wideo dostaniesz w potwierdzeniu.</p>
           <ul className="mt-8 grid gap-px border-y border-rule bg-rule">
             {advisors.map(member => {
@@ -38,7 +38,7 @@ export default async function ContactPage() {
               return (
                 <li key={member.slug} className="flex flex-col justify-between gap-4 bg-paper py-6 sm:flex-row sm:items-center">
                   <div>
-                    <p className="font-serif text-xl">{member.name}</p>
+                    <p className="font-display text-xl uppercase tracking-[-0.02em]">{member.name}</p>
                     <p className="text-sm text-ink-muted">{member.specialization}</p>
                   </div>
                   <LinkButton href={href} variant="secondary" className="shrink-0">
@@ -58,7 +58,7 @@ export default async function ContactPage() {
         <aside className="grid content-start gap-10">
           <div>
             <h2 className="eyebrow">Biuro</h2>
-            <address className="mt-3 font-serif text-xl not-italic leading-snug">
+            <address className="mt-3 text-lg font-medium not-italic leading-snug">
               {site.address.street}<br />{site.address.postalCode} {site.address.city}, {site.address.district}
             </address>
             <a href={mapUrl} className="link-underline mt-2 inline-block text-sm text-ledger" rel="noopener">Zobacz na mapie (OpenStreetMap)</a>

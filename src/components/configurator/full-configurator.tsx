@@ -47,7 +47,7 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
     <section aria-labelledby={`krok-${n}`} className="grid gap-5 border-t border-rule py-8 md:grid-cols-[4.5rem_1fr]">
       <p aria-hidden="true" className="num font-serif text-xl text-ledger/70">{n}<span className="text-ink-muted">/5</span></p>
       <div className="grid gap-5">
-        <h2 id={`krok-${n}`} className="font-serif text-xl text-ink">{title}</h2>
+        <h2 id={`krok-${n}`} className="font-display text-xl text-ink uppercase tracking-[-0.02em]">{title}</h2>
         {children}
       </div>
     </section>
@@ -121,7 +121,7 @@ function Questions({ taxYear }: { taxYear: TaxYear }) {
         <section aria-labelledby="dodatki" className="grid gap-5 border-t border-rule py-8 md:grid-cols-[4.5rem_1fr]">
           <span aria-hidden="true" />
           <div>
-            <h2 id="dodatki" className="font-serif text-xl text-ink">Dodatkowo</h2>
+            <h2 id="dodatki" className="font-display text-xl text-ink uppercase tracking-[-0.02em]">Dodatkowo</h2>
             <ul className="mt-5 grid gap-3">
               {addons.map(addon => {
                 const checked = input.addons.includes(addon.id)
@@ -152,7 +152,7 @@ function Questions({ taxYear }: { taxYear: TaxYear }) {
             <div className="mb-8 flex items-start justify-between gap-6">
               <div>
                 <p className="eyebrow">Porównywarka form opodatkowania</p>
-                <Dialog.Title className="mt-2 font-serif text-2xl text-ink">Skala, liniowy czy ryczałt?</Dialog.Title>
+                <Dialog.Title className="mt-2 font-display text-2xl text-ink uppercase tracking-[-0.02em]">Skala, liniowy czy ryczałt?</Dialog.Title>
               </div>
               <Dialog.Close className="grid size-11 place-items-center text-ink-muted hover:text-ink" aria-label="Zamknij">
                 <X className="size-5" strokeWidth={1.5} aria-hidden="true" />
@@ -203,7 +203,7 @@ function Summary({ team }: { team: AdvisorSummary[] }) {
         Lines={MotionLines}
         footer={
           <div className="mt-6 grid gap-3">
-            <Button onClick={() => open('consultation')} className="w-full">Umów bezpłatną konsultację (20 min)</Button>
+            <Button onClick={() => open('consultation')} className="w-full">Bezpłatna konsultacja · 20 min</Button>
             <Button variant="secondary" onClick={() => open('pdf')} className="w-full" id="pdf">Pobierz wycenę PDF</Button>
             <CopyLink />
           </div>

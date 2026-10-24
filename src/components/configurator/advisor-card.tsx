@@ -23,7 +23,7 @@ export function AdvisorCard({ team }: { team: AdvisorSummary[] }) {
       <Portrait name={advisor.name} photo={advisor.photo} size="sm" className="shrink-0 rounded-full" />
       <div className="text-sm">
         <p className="eyebrow">Twoja księgowa</p>
-        <p className="mt-1 font-serif text-lg leading-tight text-ink">
+        <p className="mt-1 font-display text-lg leading-tight text-ink uppercase tracking-[-0.02em]">
           <Link href={`/zespol/${advisor.slug}`} className="link-underline">{advisor.name}</Link>
         </p>
         <p className="text-ink-muted">{advisor.specialization} · {advisor.responseTime}</p>

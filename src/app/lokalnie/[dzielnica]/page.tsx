@@ -49,17 +49,17 @@ export default async function DistrictPage({ params }: PageProps<'/lokalnie/[dzi
       <div className="container-page grid gap-16 pb-24 lg:grid-cols-[1fr_22rem] lg:pb-32">
         <div className="grid max-w-prose gap-12">
           <section aria-labelledby="dojazd">
-            <h2 id="dojazd" className="font-serif text-2xl">Dojazd i dokumenty</h2>
+            <h2 id="dojazd" className="font-display text-2xl uppercase tracking-[-0.02em]">Dojazd i dokumenty</h2>
             <p className="mt-3 text-ink-muted">{district.access}</p>
           </section>
           <section aria-labelledby="lokalnie">
-            <h2 id="lokalnie" className="font-serif text-2xl">Kogo obsługujemy w dzielnicy {district.name}</h2>
+            <h2 id="lokalnie" className="font-display text-2xl uppercase tracking-[-0.02em]">Kogo obsługujemy w dzielnicy {district.name}</h2>
             <p className="mt-3 text-ink-muted">{district.localNote}</p>
             <p className="mt-4 text-sm text-ink-muted">Osiedla i okolice: {district.neighbourhoods.join(', ')}.</p>
           </section>
           {district.testimonial && (
             <figure className="border-l-2 border-brass pl-6">
-              <blockquote className="font-serif text-xl leading-snug">„{district.testimonial.quote}”</blockquote>
+              <blockquote className="font-display text-xl leading-snug tracking-[-0.02em]">„{district.testimonial.quote}”</blockquote>
               <figcaption className="mt-4 text-sm text-ink-muted">
                 {district.testimonial.author} · {district.testimonial.business} · {district.testimonial.legalForm}
               </figcaption>
@@ -67,7 +67,7 @@ export default async function DistrictPage({ params }: PageProps<'/lokalnie/[dzi
             </figure>
           )}
           <section aria-labelledby="uslugi-lokalnie">
-            <h2 id="uslugi-lokalnie" className="font-serif text-2xl">Usługi</h2>
+            <h2 id="uslugi-lokalnie" className="font-display text-2xl uppercase tracking-[-0.02em]">Usługi</h2>
             <ul className="mt-4 border-t border-rule">
               {services.map(s => (
                 <li key={s.slug} className="border-b border-rule">
@@ -88,7 +88,7 @@ export default async function DistrictPage({ params }: PageProps<'/lokalnie/[dzi
               <div className="mt-4 flex items-center gap-4">
                 <Portrait name={advisor.name} photo={advisor.photo} size="sm" className="rounded-full" />
                 <div>
-                  <Link href={`/zespol/${advisor.slug}`} className="font-serif text-lg link-underline">{advisor.name}</Link>
+                  <Link href={`/zespol/${advisor.slug}`} className="font-display text-lg link-underline uppercase tracking-[-0.02em]">{advisor.name}</Link>
                   <p className="text-sm text-ink-muted">{advisor.responseTime}</p>
                 </div>
               </div>

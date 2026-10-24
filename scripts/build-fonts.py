@@ -1,7 +1,7 @@
 """
 Podzbiory fontów pod LCP na mobile (ADR-010).
 
-Z plików zmiennych google/fonts (OFL) robi statyczne instancje w używanych wagach i zostawia tylko
+Z plików zmiennych google/fonts (OFL) robi instancje w używanych wagach i zostawia tylko
 glify, których strona potrzebuje: łacinę, polskie znaki i typografię (cudzysłowy, myślniki, strzałki).
 Jeden mały plik na krój = wszystko preloadowane, bez drugiej rundy pobrań po sparsowaniu CSS.
 
@@ -9,6 +9,7 @@ Użycie (fonttools + brotli):
     python scripts/build-fonts.py <katalog z plikami .ttf z google/fonts>
 """
 import sys
+from io import BytesIO
 from pathlib import Path
 
 from fontTools import subset
@@ -27,29 +28,32 @@ UNICODES = [
     0x2013, 0x2014, 0x2018, 0x2019, 0x201A, 0x201C, 0x201D, 0x201E,  # myślniki, cudzysłowy „”
     0x2022, 0x2026, 0x20AC, 0x2116,  # • … € №
     0x2190, 0x2192, 0x2193, 0x2212, 0x2264, 0x2265, 0x2713,  # ← → ↓ − ≤ ≥ ✓
+    0x2122,  # ™ - znacznik w stylu druku technicznego (ADR-012); kwadraty ■ rysuje CSS
 ]
 
-# Kursywa jest tylko w „&” logo i w inicjałach monogramów - wystarczą litery i „&”.
-ITALIC_UNICODES = [0x20, 0x26, *range(0x41, 0x5B), *range(0x61, 0x7B)]
-
+# Osie: liczba = instancja statyczna, krotka = zawężony zakres zmienny (jeden plik na kilka wag).
 FONTS = [
-    # (plik źródłowy, plik wynikowy, waga, znaki)
-    ("Inter[opsz,wght].ttf", "inter-400.woff2", 400, UNICODES),
-    ("Inter[opsz,wght].ttf", "inter-500.woff2", 500, UNICODES),
-    ("Newsreader[opsz,wght].ttf", "newsreader-500.woff2", 500, UNICODES),
-    ("Newsreader-Italic[opsz,wght].ttf", "newsreader-500-italic.woff2", 500, ITALIC_UNICODES),
-    # Obrazek do udostępniania (next/og, Satori) nie czyta woff2 - te same podzbiory jako TTF.
-    ("Newsreader[opsz,wght].ttf", "og/newsreader-500.ttf", 500, UNICODES),
-    ("Inter[opsz,wght].ttf", "og/inter-500.ttf", 500, UNICODES),
+    # (plik źródłowy, plik wynikowy, osie)
+    ("Inter[opsz,wght].ttf", "inter-text.woff2", {"opsz": 14, "wght": (400, 500)}),
+    ("Inter[opsz,wght].ttf", "inter-display.woff2", {"opsz": 32, "wght": 900}),
+    ("JetBrainsMono[wght].ttf", "jetbrains-mono.woff2", {"wght": (400, 700)}),
+    # Obrazek do udostępniania (next/og, Satori) nie czyta woff2 ani fontów zmiennych - statyczne TTF.
+    ("Inter[opsz,wght].ttf", "og/inter-display.ttf", {"opsz": 32, "wght": 900}),
+    ("JetBrainsMono[wght].ttf", "og/jetbrains-mono.ttf", {"wght": 500}),
 ]
 
 
-def build(source: str, target: str, weight: int, unicodes: list[int]) -> None:
+def build(source: str, target: str, pinned: dict) -> None:
     font = TTFont(SOURCE / source)
-    # Pozostałe osie (opsz) przypinamy do wartości domyślnej - tak jak statyczne pliki Google Fonts.
+    # Osie nieopisane przypinamy do wartości domyślnej - tak jak statyczne pliki Google Fonts.
     axes = {axis.axisTag: axis.defaultValue for axis in font["fvar"].axes}
-    axes["wght"] = weight
+    axes.update(pinned)
     static = instantiateVariableFont(font, axes)
+    # Po zawężeniu osi tablica gvar zostaje „leniwa” i subsetter jej nie obsługuje - zapis i odczyt w pamięci.
+    buffer = BytesIO()
+    static.save(buffer)
+    buffer.seek(0)
+    static = TTFont(buffer)
 
     woff2 = target.endswith(".woff2")
     options = subset.Options()
@@ -58,7 +62,7 @@ def build(source: str, target: str, weight: int, unicodes: list[int]) -> None:
     options.name_IDs = ["*"]
     options.notdef_outline = True
     subsetter = subset.Subsetter(options)
-    subsetter.populate(unicodes=unicodes)
+    subsetter.populate(unicodes=UNICODES)
     subsetter.subset(static)
 
     (OUT / target).parent.mkdir(parents=True, exist_ok=True)

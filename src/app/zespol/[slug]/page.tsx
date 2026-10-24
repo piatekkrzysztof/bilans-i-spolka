@@ -40,7 +40,7 @@ export default async function TeamMemberPage({ params }: PageProps<'/zespol/[slu
           <ConceptNote className="mt-3">Portret przykładowy</ConceptNote>
         </div>
         <div className="max-w-prose">
-          <p className="font-serif text-2xl leading-snug text-ink">{member.specialization}</p>
+          <p className="font-display text-[1.75rem] leading-tight text-ink tracking-[-0.02em]">{member.specialization}</p>
           <RichText value={member.bio} />
           <dl className="mt-10 grid gap-6 border-t border-ink/70 pt-8 sm:grid-cols-2">
             <div>
@@ -57,12 +57,12 @@ export default async function TeamMemberPage({ params }: PageProps<'/zespol/[slu
           )}
           {authored.length > 0 && (
             <section className="mt-16" aria-labelledby="artykuly">
-              <h2 id="artykuly" className="font-serif text-xl">Artykuły w bazie wiedzy</h2>
+              <h2 id="artykuly" className="font-display text-xl uppercase tracking-[-0.02em]">Artykuły w bazie wiedzy</h2>
               <ul className="mt-4 border-t border-rule">
                 {authored.map(a => (
                   <li key={a.slug} className="border-b border-rule">
                     <Link href={`/wiedza/${a.slug}`} className="block py-4 hover:text-ledger">
-                      <span className="font-serif text-lg">{a.title}</span>
+                      <span className="font-display text-lg uppercase tracking-[-0.02em]">{a.title}</span>
                       <span className="mt-1 block text-xs text-ink-muted">Aktualizacja: {formatDate(a.updatedAt)}</span>
                     </Link>
                   </li>

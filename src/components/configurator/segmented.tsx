@@ -51,7 +51,7 @@ export function Segmented<T extends string>({
         aria-describedby={description ? `${id}-desc` : undefined}
         orientation="horizontal"
         loop
-        className="flex flex-wrap gap-px overflow-hidden rounded-[3px] border border-rule bg-rule"
+        className="flex flex-wrap gap-px overflow-hidden border-2 border-ink bg-ink"
       >
         {options.map(option => (
           <RadioGroup.Item
@@ -59,21 +59,19 @@ export function Segmented<T extends string>({
             value={option.value}
             disabled={option.disabled}
             className={cn(
-              'num group relative flex-1 bg-surface px-2 text-center leading-tight text-ink-muted transition-colors duration-300 ease-calm sm:px-3',
+              'group relative flex-1 bg-paper px-2 text-center font-mono uppercase leading-tight tracking-[0.04em] text-ink transition-colors duration-150 sm:px-3',
               // Długie etykiety (formy działalności) mogą się zawinąć; krótkie (przedziały) - nigdy w połowie „41–100”.
               wrap ? 'min-w-[calc(50%-1px)] sm:min-w-0' : 'min-w-0 whitespace-nowrap',
-              size === 'sm' ? 'min-h-10 text-[0.8125rem]' : 'min-h-12 text-sm',
-              'hover:text-ink',
+              size === 'sm' ? 'min-h-10 text-[0.75rem]' : 'min-h-12 text-[0.8125rem]',
+              'hover:bg-ledger-soft',
               'focus-visible:z-10 focus-visible:outline-offset-[-2px]',
-              'data-[state=checked]:bg-ledger-soft data-[state=checked]:font-medium data-[state=checked]:text-ledger-deep',
-              'disabled:cursor-not-allowed disabled:opacity-50',
+              // Wybrana opcja: odwrócenie kolorów - czytelne bez koloru, jak wciśnięty klawisz na panelu.
+              'data-[state=checked]:bg-ink data-[state=checked]:font-bold data-[state=checked]:text-paper',
+              'disabled:cursor-not-allowed disabled:bg-ledger-soft disabled:text-ink-muted disabled:line-through',
             )}
           >
             {option.label}
-            <span
-              aria-hidden="true"
-              className="absolute inset-x-3 bottom-0 h-px origin-center scale-x-0 bg-ledger transition-transform duration-500 ease-calm group-data-[state=checked]:scale-x-100"
-            />
+            <span aria-hidden="true" className="absolute right-1 top-1 hidden size-1.5 bg-signal group-data-[state=checked]:block" />
           </RadioGroup.Item>
         ))}
       </RadioGroup.Root>

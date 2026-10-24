@@ -2,14 +2,19 @@ import Link from 'next/link'
 import type { ComponentProps, ReactNode } from 'react'
 import { cn } from '@/lib/cn'
 
-type Variant = 'primary' | 'secondary' | 'text'
+type Variant = 'primary' | 'secondary' | 'inverse' | 'outline-inverse' | 'text'
 
-const base = 'inline-flex items-center justify-center gap-2 font-medium transition-colors duration-300 ease-[var(--ease-calm)] disabled:cursor-not-allowed disabled:opacity-60'
+// Przyciski jak etykiety na panelu maszyny: mono, wersaliki, kąty proste, odwrócenie kolorów na hover.
+const base = 'inline-flex items-center justify-center gap-3 transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50'
+const label = 'min-h-12 border-2 px-6 font-mono text-[0.8125rem] font-bold uppercase tracking-[0.08em]'
 
 const variants: Record<Variant, string> = {
-  primary: 'min-h-12 rounded-[3px] bg-ledger px-6 text-sm text-paper hover:bg-ledger-deep',
-  secondary: 'min-h-12 rounded-[3px] border border-ledger/30 bg-surface px-6 text-sm text-ledger hover:border-ledger',
-  text: 'min-h-11 text-sm text-ledger link-underline',
+  'primary': `${label} border-ink bg-ink text-paper hover:bg-paper hover:text-ink`,
+  'secondary': `${label} border-ink bg-transparent text-ink hover:bg-ink hover:text-paper`,
+  // Na ciemnym tle (baner KSeF, końcowe CTA).
+  'inverse': `${label} border-paper bg-paper text-ink hover:bg-transparent hover:text-paper`,
+  'outline-inverse': `${label} border-paper bg-transparent text-paper hover:bg-paper hover:text-ink`,
+  'text': 'min-h-11 text-sm font-medium text-ink link-underline',
 }
 
 export function buttonClass(variant: Variant = 'primary', className?: string) {

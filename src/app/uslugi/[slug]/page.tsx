@@ -43,7 +43,7 @@ export default async function ServicePage({ params }: PageProps<'/uslugi/[slug]'
 
           <div className="mt-14 grid gap-10 border-t border-ink/70 pt-10 sm:grid-cols-2">
             <div>
-              <h2 className="font-serif text-xl">W cenie</h2>
+              <h2 className="font-display text-xl uppercase tracking-[-0.02em]">W cenie</h2>
               <ul className="mt-4 grid gap-2.5 text-sm">
                 {service.included.map(item => (
                   <li key={item} className="grid grid-cols-[1.25rem_1fr] gap-2"><span aria-hidden="true" className="text-ledger">✓</span>{item}</li>
@@ -51,7 +51,7 @@ export default async function ServicePage({ params }: PageProps<'/uslugi/[slug]'
               </ul>
             </div>
             <div>
-              <h2 className="font-serif text-xl">Osobno</h2>
+              <h2 className="font-display text-xl uppercase tracking-[-0.02em]">Osobno</h2>
               <ul className="mt-4 grid gap-2.5 text-sm text-ink-muted">
                 {service.notIncluded.map(item => (
                   <li key={item} className="grid grid-cols-[1.25rem_1fr] gap-2"><span aria-hidden="true">-</span>{item}</li>
@@ -61,7 +61,7 @@ export default async function ServicePage({ params }: PageProps<'/uslugi/[slug]'
           </div>
 
           <section className="mt-16" aria-labelledby="faq-uslugi">
-            <h2 id="faq-uslugi" className="mb-6 font-serif text-2xl">Pytania o {service.title.toLowerCase()}</h2>
+            <h2 id="faq-uslugi" className="mb-6 font-display text-2xl uppercase tracking-[-0.02em]">Pytania o {service.title.toLowerCase()}</h2>
             <FaqList items={service.faq} />
           </section>
         </div>

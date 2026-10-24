@@ -33,7 +33,7 @@ export default async function ServicesPage() {
             {services.map(service => (
               <tr key={service.slug} className="group border-b border-rule align-top">
                 <th scope="row" className="py-7 pr-6 font-normal">
-                  <Link href={`/uslugi/${service.slug}`} className="font-serif text-2xl text-ink group-hover:text-ledger">{service.title}</Link>
+                  <Link href={`/uslugi/${service.slug}`} className="font-display text-2xl text-ink group-hover:text-ledger uppercase tracking-[-0.02em]">{service.title}</Link>
                 </th>
                 <td className="hidden max-w-xl py-7 pr-6 text-ink-muted md:table-cell">{service.summary}</td>
                 <td className="num py-7 text-right font-serif text-xl text-ink">

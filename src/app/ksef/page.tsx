@@ -52,7 +52,7 @@ export default async function KsefPage() {
 
       <section className="container-page grid gap-16 pb-24 lg:grid-cols-[1fr_24rem]" aria-labelledby="test">
         <div className="rounded-[3px] border border-rule bg-surface p-6 sm:p-10">
-          <h2 id="test" className="font-serif text-2xl">Test gotowości</h2>
+          <h2 id="test" className="font-display text-2xl uppercase tracking-[-0.02em]">Test gotowości</h2>
           <p className="mb-8 mt-2 text-sm text-ink-muted">Bez e-maila. Odpowiedzi nie są nigdzie zapisywane.</p>
           <ReadinessQuiz />
         </div>
@@ -77,7 +77,7 @@ export default async function KsefPage() {
             {STEPS.map((step, i) => (
               <li key={step.title} className="bg-surface p-6 md:first:pl-0">
                 <span aria-hidden="true" className="num font-serif text-3xl text-ledger/60">{i + 1}</span>
-                <h3 className="mt-6 font-serif text-xl">{step.title}</h3>
+                <h3 className="mt-6 font-display text-xl uppercase tracking-[-0.02em]">{step.title}</h3>
                 <p className="mt-2 text-sm text-ink-muted">{step.text}</p>
               </li>
             ))}
@@ -86,7 +86,7 @@ export default async function KsefPage() {
       </section>
 
       <section className="container-page section-space grid gap-12 lg:grid-cols-[1fr_1.6fr]" aria-labelledby="faq-ksef">
-        <SectionHeading id="faq-ksef" eyebrow="Pytania" title="KSeF w pytaniach." className="md:grid-cols-1" />
+        <SectionHeading id="faq-ksef" eyebrow="Pytania" title="KSeF w pytaniach." stacked />
         <FaqList items={FAQ} />
       </section>
     </>
