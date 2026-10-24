@@ -57,7 +57,8 @@ export const teamMember = defineType({
     defineField({ name: 'yearsOfExperience', type: 'number', title: 'Lata doświadczenia' }),
     defineField({ name: 'legalForms', type: 'array', title: 'Prowadzi formy działalności', of: [{ type: 'string' }], options: { list: LEGAL_FORMS }, description: 'Na tej podstawie konfigurator i n8n przydzielają opiekunkę.' }),
     defineField({ name: 'taxForms', type: 'array', title: 'Specjalizuje się w podatku', of: [{ type: 'string' }], options: { list: TAX_FORMS } }),
-    defineField({ name: 'priority', type: 'number', title: 'Kolejność przy remisie (mniej = wyżej)', initialValue: 5 }),
+    defineField({ name: 'orderRank', type: 'number', title: 'Kolejność na stronie' }),
+    defineField({ name: 'priority', type: 'number', title: 'Przydział leadów przy remisie (mniej = wyżej)', initialValue: 5 }),
     defineField({ name: 'acceptsNewClients', type: 'boolean', title: 'Przyjmuje nowych klientów', initialValue: true }),
     defineField({ name: 'calLink', type: 'url', title: 'Link do kalendarza Cal.com' }),
     defineField({

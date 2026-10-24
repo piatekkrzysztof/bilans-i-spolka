@@ -25,3 +25,6 @@ npm-debug.log*
 # zmienne środowiskowe - wzór w .env.example
 .env*
 !.env.example
+
+# wygenerowane przez pnpm sanity:seed
+/studio/seed

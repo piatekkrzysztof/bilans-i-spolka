@@ -31,6 +31,13 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - name: Sanity Studio - typy i walidacja schematu
+        env:
+          SANITY_STUDIO_PROJECT_ID: ci00demo
+        run: |
+          pnpm --dir studio install --ignore-workspace --frozen-lockfile
+          pnpm --dir studio typecheck
+          pnpm --dir studio validate
 
   e2e:
     name: Build, e2e i dostępność

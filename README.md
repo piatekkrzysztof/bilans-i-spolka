@@ -36,6 +36,19 @@ pnpm dev
 
 Bez kluczy Sanity i Supabase aplikacja działa w całości: treści z `src/content/fixtures`, leady w pamięci.
 
+### Treści w Sanity
+
+```bash
+pnpm sanity:seed                       # fixtures → studio/seed/production.ndjson (ceny w zł, stawki w %)
+cd studio && pnpm install --ignore-workspace
+pnpm exec sanity login
+pnpm exec sanity dataset import seed/production.ndjson production --replace
+pnpm dev                               # Studio na http://localhost:3333
+```
+
+Test `tests/unit/sanity-seed.test.ts` przepuszcza seed przez te same zapytania GROQ co aplikacja (`groq-js`)
+i sprawdza, że cennik i stawki wracają co do grosza.
+
 | Polecenie | Co robi |
 | --- | --- |
 | `pnpm check` | ESLint, typy, testy jednostkowe |
@@ -58,8 +71,9 @@ tests/          testy jednostkowe potoku leadów i e2e
 
 ## Jakość
 
-- 60 testów jednostkowych: cennik (kombinacje, przedziały, niezmienniki na 320 kombinacjach), ZUS 2026 co do grosza,
-  porównywarka, scoring, kodek URL, potok leadów (walidacja, duplikat, Turnstile, 429, podpis i awaria webhooka).
+- 66 testów jednostkowych: cennik (kombinacje, przedziały, niezmienniki na 320 kombinacjach), ZUS 2026 co do grosza,
+  porównywarka, scoring, kodek URL, potok leadów (walidacja, duplikat, Turnstile, 429, podpis i awaria webhooka),
+  seed Sanity sprawdzany przez zapytania GROQ aplikacji.
 - 33 testy e2e, w tym axe (WCAG 2.2 AA) na 9 stronach i obsługa konfiguratora wyłącznie klawiaturą.
 - Cena ogłaszana przez `aria-live`, segmentowe przyciski jako grupa radio ze strzałkami, widoczny focus.
 - Lighthouse CI (mobile, rzeczywiste dławienie, mediana z 5 przebiegów): wydajność 99, dostępność, Best Practices

@@ -19,6 +19,7 @@
     "test:e2e": "playwright test",
     "analyze": "ANALYZE=true next build",
     "check:bundle": "node scripts/check-bundle.mjs",
+    "sanity:seed": "tsx scripts/sanity-seed.ts",
     "check": "eslint . && next typegen && tsc --noEmit && vitest run"
   },
   "dependencies": {
@@ -47,8 +48,10 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
+    "groq-js": "^2.0.0",
     "schema-dts": "^2.1.0",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5",
     "vitest": "^5.0.5"
   },
