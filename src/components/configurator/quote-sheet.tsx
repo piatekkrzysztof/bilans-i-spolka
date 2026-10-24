@@ -14,7 +14,7 @@ import { cn } from '@/lib/cn'
 import { useQuote } from './quote-store'
 import { RollingNumber, RollingSuffix } from './rolling-number'
 
-export const lineClass = 'grid grid-cols-[1fr_auto] items-baseline gap-x-4 border-b border-rule py-2.5 text-sm'
+export const lineClass = 'grid grid-cols-[1fr_auto] items-baseline gap-x-4 border-b border-dashed border-ink/35 py-2.5 text-sm'
 
 export function LineContent({ line }: { line: QuoteLine }) {
   const qty = line.quantity && line.unitPrice ? `${line.quantity} × ${formatPLN(line.unitPrice)}` : line.detail
@@ -76,40 +76,38 @@ export function QuoteSheet({
   return (
     <section
       aria-label="Podsumowanie wyceny"
-      className={cn('ledger-margin rounded-[3px] border border-rule bg-surface shadow-[0_1px_0_var(--color-rule),0_24px_48px_-32px_rgb(26_29_27/0.25)]', className)}
+      className={cn('ledger-margin border-2 border-ink bg-surface', className)}
     >
-      <div className={cn('pl-10 pr-5 sm:pl-12 sm:pr-7', compact ? 'py-5' : 'py-7')}>
-        <header className="flex items-center justify-between gap-4 border-b border-ink/80 pb-3">
-          <p className="font-serif text-lg text-ink">{title}</p>
-          <div role="group" aria-label="Pokaż ceny" className="flex text-xs">
-            {(['net', 'gross'] as const).map(mode => (
-              <button
-                key={mode}
-                type="button"
-                aria-pressed={display === mode}
-                onClick={() => setDisplay(mode)}
-                className={cn(
-                  'min-h-8 px-2.5 transition-colors',
-                  display === mode ? 'text-ledger underline decoration-brass underline-offset-4' : 'text-ink-muted hover:text-ink',
-                )}
-              >
-                {mode === 'net' ? 'netto' : 'brutto'}
-              </button>
-            ))}
-          </div>
-        </header>
+      {/* Pasek formularza: odwrócone kolory, tytuł i przełącznik jak na druku urzędowym. */}
+      <header className="relative z-10 flex items-center justify-between gap-4 bg-ink py-2 pl-4 pr-2 text-paper">
+        <p className="font-mono text-xs font-bold uppercase tracking-[0.1em]">{title}</p>
+        <div role="group" aria-label="Pokaż ceny" className="flex border border-paper/60 font-mono text-[0.6875rem] uppercase tracking-[0.08em]">
+          {(['net', 'gross'] as const).map(mode => (
+            <button
+              key={mode}
+              type="button"
+              aria-pressed={display === mode}
+              onClick={() => setDisplay(mode)}
+              className={cn('min-h-8 px-2.5 transition-colors', display === mode ? 'bg-paper text-ink' : 'text-paper hover:bg-paper/15')}
+            >
+              {mode === 'net' ? 'netto' : 'brutto'}
+            </button>
+          ))}
+        </div>
+      </header>
+      <div className={cn('pl-10 pr-5 sm:pl-12 sm:pr-6', compact ? 'pb-5 pt-3' : 'pb-7 pt-4')}>
 
         {children}
 
         <Lines lines={monthlyLines} label="Pozycje miesięczne" />
 
         <div className="mt-5 flex items-end justify-between gap-4">
-          <p className="pb-1.5 text-sm text-ink-muted">
-            {quote.isFromPrice ? 'Miesięcznie od' : 'Razem miesięcznie'}
-            <span className="block text-xs">{gross ? 'brutto' : 'netto'}</span>
+          <p className="eyebrow pb-2">
+            {quote.isFromPrice ? 'Miesięcznie od' : 'Razem / mies.'}
+            <span className="block text-ink-muted">{gross ? 'brutto' : 'netto'}</span>
           </p>
           <div className="text-right">
-            <p className={cn('flex items-end justify-end font-serif leading-none text-ink', compact ? 'text-[2.5rem]' : 'text-[2.75rem] sm:text-3xl')}>
+            <p className={cn('flex items-end justify-end font-mono font-bold leading-none tracking-[-0.04em] text-ink', compact ? 'text-[2.5rem]' : 'text-[2.75rem] sm:text-[3.5rem]')}>
               <RollingNumber value={formatAmount(total)} />
               <RollingSuffix className="ml-1.5 text-[0.45em] text-ink-muted">zł</RollingSuffix>
             </p>

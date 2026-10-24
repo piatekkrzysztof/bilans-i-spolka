@@ -9,10 +9,10 @@ export async function KsefDays({ mandatoryFrom }: { mandatoryFrom: string }) {
   'use cache'
   cacheLife('hours')
   const days = daysUntil(mandatoryFrom, new Date())
-  if (days <= 0) return <span className="num">KSeF obowiązuje</span>
+  if (days <= 0) return <span>KSeF obowiązuje</span>
   return (
     <>
-      <span className="num">{days}</span> {plural(days, 'dzień', 'dni', 'dni')}
+      <span className="tabular-nums">{days}</span> {plural(days, 'dzień', 'dni', 'dni')}
     </>
   )
 }

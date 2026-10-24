@@ -42,7 +42,7 @@ export default function SwitchPage() {
                 <p className="num font-serif text-2xl text-ink">Dzień {step.day}</p>
                 <p className={step.who === 'Ty' ? 'eyebrow !text-ink md:pt-2' : 'eyebrow !text-ledger md:pt-2'}>{step.who}</p>
                 <div>
-                  <h3 className="font-serif text-xl">{step.title}</h3>
+                  <h3 className="font-display text-xl uppercase tracking-[-0.02em]">{step.title}</h3>
                   <p className="mt-1 max-w-2xl text-ink-muted">{step.text}</p>
                 </div>
               </li>
@@ -57,7 +57,7 @@ export default function SwitchPage() {
           eyebrow="Lista"
           title="Co przygotować przy zmianie biura."
           lead="Odhaczaj na bieżąco - postęp zapisuje się w adresie strony, więc możesz go zapisać w zakładkach albo wysłać wspólnikowi."
-          className="md:grid-cols-1"
+          stacked
         />
         {/* Bez parametrów z URL (prerender, brak JS) lista renderuje się jako zwykłe wypunktowanie. */}
         <Suspense fallback={<ul className="grid list-[square] gap-2 pl-5 text-sm marker:text-brass">{CHECKLIST.map(item => <li key={item}>{item}</li>)}</ul>}>

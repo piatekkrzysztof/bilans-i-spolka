@@ -31,7 +31,7 @@ export default async function TeamPage() {
               <Link href={`/zespol/${member.slug}`} className="group grid items-center gap-8 py-10 md:grid-cols-[12rem_1fr_16rem]">
                 <Portrait name={member.name} photo={member.photo} className="max-w-48" />
                 <div>
-                  <h2 className="font-serif text-[2rem] leading-tight text-ink group-hover:text-ledger">{member.name}</h2>
+                  <h2 className="font-display text-[2rem] leading-tight text-ink group-hover:text-ledger uppercase tracking-[-0.02em]">{member.name}</h2>
                   <p className="text-ink-muted">{member.role}</p>
                   <p className="mt-4 max-w-xl text-ink">{member.specialization}</p>
                 </div>

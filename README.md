@@ -17,6 +17,12 @@ Strona odpowiada na pytanie „ile to kosztuje?”, zanim klient zadzwoni, i zam
 - **SEO lokalne** - `/biuro-rachunkowe-[dzielnica]`, schema.org `AccountingService`, `Person`, `FAQPage`, `Article`
   z autorką i datą aktualizacji (E-E-A-T).
 
+## Wygląd
+
+„Druk techniczny”: szwajcarski brutalizm na papierze - tusz, jedna czerwień, kąty proste, widoczne siatki,
+nagłówki w Inter Display 900, liczby w JetBrains Mono. Czerwień nigdy nie stoi przy kwocie (w księgowości to
+strata), a tekst ciągły zostaje zwykłym zdaniem. Zasady i granice stylu: [ADR-012](docs/ARCHITECTURE.md).
+
 ## Stos
 
 Next.js 16 (App Router, Cache Components) · TypeScript strict · Tailwind CSS 4 (tokeny w `@theme`) · Radix UI ·

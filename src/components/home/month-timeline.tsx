@@ -40,17 +40,17 @@ export function MonthTimeline({ events }: { events: MonthEvent[] }) {
         <div className="lg:sticky lg:top-32" aria-hidden="true">
           <div className="relative overflow-x-auto pb-4">
             <div className="relative min-w-[40rem]">
-              <div className="grid grid-cols-31 border-b border-ink/70">
+              <div className="grid grid-cols-31 border-b-2 border-ink">
                 {DAYS.map(day => {
                   const event = events.find(e => e.day === day)
                   const isActive = current?.day === day
                   return (
-                    <div key={day} className="relative flex h-40 flex-col justify-end">
+                    <div key={day} className="relative flex h-40 flex-col justify-end border-l border-rule first:border-l-0">
                       {event && (
                         <span
                           className={cn(
-                            'absolute bottom-0 left-1/2 w-px origin-bottom -translate-x-1/2 transition-all duration-700 ease-calm',
-                            event.who === 'client' ? 'bg-brass' : 'bg-ledger',
+                            'absolute bottom-0 left-1/2 w-0.5 origin-bottom -translate-x-1/2 transition-all duration-300 ease-calm',
+                            event.who === 'client' ? 'bg-signal' : 'bg-ink',
                             isActive ? 'h-full opacity-100' : 'h-1/3 opacity-40',
                           )}
                         />
@@ -58,9 +58,9 @@ export function MonthTimeline({ events }: { events: MonthEvent[] }) {
                       {event && (
                         <span
                           className={cn(
-                            'absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full border transition-all duration-700 ease-calm',
-                            event.who === 'client' ? 'border-brass bg-paper' : 'border-ledger bg-ledger',
-                            isActive ? 'top-0 scale-125' : 'top-2/3 opacity-60',
+                            'absolute left-1/2 size-3 -translate-x-1/2 transition-all duration-300 ease-calm',
+                            event.who === 'client' ? 'bg-signal' : 'bg-ink',
+                            isActive ? 'top-0 scale-125' : 'top-2/3 opacity-50',
                           )}
                         />
                       )}
@@ -73,8 +73,8 @@ export function MonthTimeline({ events }: { events: MonthEvent[] }) {
                   <span
                     key={day}
                     className={cn(
-                      'num text-center text-[0.6875rem] transition-colors duration-500',
-                      current?.day === day ? 'font-medium text-ink' : events.some(e => e.day === day) ? 'text-ledger' : 'text-ink-muted',
+                      'num text-center text-[0.6875rem] transition-colors duration-300',
+                      current?.day === day ? 'bg-ink font-bold text-paper' : events.some(e => e.day === day) ? 'font-bold text-ink' : 'text-ink-muted',
                     )}
                   >
                     {day}
@@ -83,9 +83,9 @@ export function MonthTimeline({ events }: { events: MonthEvent[] }) {
               </div>
             </div>
           </div>
-          <div className="mt-8 flex flex-wrap gap-6 text-sm text-ink-muted">
-            <span className="inline-flex items-center gap-2"><span className="size-2.5 rounded-full border border-brass" /> Ty - {clientCount} razy w miesiącu</span>
-            <span className="inline-flex items-center gap-2"><span className="size-2.5 rounded-full bg-ledger" /> Biuro - cała reszta</span>
+          <div className="mt-8 flex flex-wrap gap-6 font-mono text-xs uppercase tracking-[0.06em] text-ink">
+            <span className="inline-flex items-center gap-2"><span className="size-3 bg-signal" /> Ty - {clientCount} razy w miesiącu</span>
+            <span className="inline-flex items-center gap-2"><span className="size-3 bg-ink" /> Biuro - cała reszta</span>
           </div>
         </div>
       </div>
@@ -97,22 +97,23 @@ export function MonthTimeline({ events }: { events: MonthEvent[] }) {
             ref={el => { stepRefs.current[index] = el }}
             data-index={index}
             className={cn(
-              // Aktywny krok wyróżnia linia w kolorze księgi, nie przygaszanie reszty - tekst zawsze trzyma kontrast AA.
-              'relative grid grid-cols-[3.5rem_1fr] gap-4 border-t border-rule py-6 lg:min-h-[40vh] lg:py-10',
-              'before:absolute before:-top-px before:left-0 before:h-px before:w-full before:origin-left before:scale-x-0 before:bg-ledger before:transition-transform before:duration-700 before:ease-calm',
+              // Aktywny krok wyróżnia gruba czerwona linia, nie przygaszanie reszty - tekst zawsze trzyma kontrast AA.
+              'relative grid grid-cols-[4rem_1fr] gap-4 border-t-2 border-ink py-6 lg:min-h-[40vh] lg:py-10',
+              'before:absolute before:-top-0.5 before:left-0 before:h-1.5 before:w-full before:origin-left before:scale-x-0 before:bg-signal before:transition-transform before:duration-300 before:ease-calm',
               active === index && 'lg:before:scale-x-100',
             )}
           >
-            <p className={cn('num font-serif text-2xl leading-none transition-colors duration-500', active === index ? 'text-ledger' : 'text-ink')}>
-              {event.day}.<span className="sr-only"> dzień miesiąca</span>
+            <p className="num text-[2rem] font-bold leading-none tracking-[-0.04em] text-ink">
+              {String(event.day).padStart(2, '0')}<span className="sr-only"> dzień miesiąca</span>
             </p>
             <div>
-              <p className={cn('eyebrow', event.who === 'client' ? '!text-ink' : '!text-ledger')}>
+              <p className="eyebrow inline-flex items-center gap-2">
+                <span aria-hidden="true" className={cn('size-2.5', event.who === 'client' ? 'bg-signal' : 'bg-ink')} />
                 {event.who === 'client' ? 'Ty' : 'Biuro'}
-                {event.appliesTo && <span className="normal-case tracking-normal text-ink-muted"> · {event.appliesTo}</span>}
+                {event.appliesTo && <span className="text-ink-muted"> / {event.appliesTo}</span>}
               </p>
-              <h3 className="mt-1.5 font-serif text-xl text-ink">{event.title}</h3>
-              <p className="mt-1.5 text-sm text-ink-muted">{event.detail}</p>
+              <h3 className="mt-2 text-xl uppercase leading-[0.95] text-ink">{event.title}</h3>
+              <p className="mt-2 text-sm text-ink">{event.detail}</p>
             </div>
           </li>
         ))}

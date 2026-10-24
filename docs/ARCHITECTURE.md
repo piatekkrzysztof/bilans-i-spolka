@@ -81,8 +81,10 @@ Druga (statyczne wagi z Google Fonts) zeszła do 85 kB preloadu, ale polskie zna
 (Lantern, ta sama co w PageSpeed Insights) liczyła ją do LCP: 3,5 s przy obserwowanym LCP 86 ms.
 
 Teraz `scripts/build-fonts.py` robi z plików google/fonts (OFL, licencje w `src/app/fonts`) statyczne instancje
-i podzbiory: łacina + polskie znaki + typografia strony, jeden plik na krój. Cztery pliki (Inter 400 i 500,
-Newsreader 500, kursywa tylko z literami i „&”) to 87 kB, wszystkie preloadowane równolegle z CSS.
+i podzbiory: łacina + polskie znaki + typografia strony, jeden plik na krój. Po zmianie stylu (ADR-012) są to
+trzy pliki, 97 kB, wszystkie preloadowane równolegle z CSS: Inter tekstowy (oś `wght` zawężona do 400-500),
+Inter Display 900 (statyczna instancja, `opsz` 32) i JetBrains Mono (`wght` 400-700). Zawężony zakres osi daje
+kilka wag z jednego pliku zamiast osobnego pobrania na każdą.
 Znak spoza podzbioru (np. z przyszłej treści w CMS) wyrenderuje się fontem zapasowym - wtedy dopisać go do listy.
 
 Pomiar lokalny na maszynie z antywirusem przechwytującym HTTP (wstrzyknięty skrypt, zdjęta kompresja) jest
@@ -120,6 +122,27 @@ PageSpeed Insights na produkcji (24.10.2026, mobile, https://bilans-i-spolka.ver
 `/wycena` jest o punkt pod progiem 95: część zależna od parametrów w URL liczy się w funkcji serwera
 (Partial Prerendering), a pierwszy pomiar był jeszcze przed przeniesieniem funkcji do Dublina. Sam framework to ~135 kB z tych 166 kB, więc zejście do 1,8 s w symulacji wymagałoby innego
 frameworka niż Next.js. Kiedy strona zbierze ruch, rozstrzygające będą dane z terenu (CrUX), nie laboratorium.
+
+### ADR-012: Styl „druk techniczny” - brutalizm, który dalej czyta klient
+Pierwszy wygląd (szeryfowy Newsreader, zieleń i mosiądz) był poprawny, ale wyglądał jak każde „eleganckie”
+biuro. Nowy kierunek bierze ze szwajcarskiego druku technicznego: papier `#f3f2ee`, tusz `#0d0d0d`, jedna
+czerwień `#e61919`, kąty proste, widoczne siatki (`gap-px` na tle tuszu), nagłówki w Inter Display 900
+wersalikami, dane i etykiety w JetBrains Mono.
+
+Granice, żeby brutalizm nie odebrał przejrzystości:
+- **Czerwień nigdy na kwotach.** W księgowości czerwona liczba to strata. Czerwień jest tylko na liniach,
+  znacznikach i indeksach; kwoty są w tuszu. Komunikaty błędów mają ciemniejszą czerwień `#b0130b` (kontrast AA).
+- **Wersaliki tylko w nagłówkach i etykietach.** Tekst ciągły, opisy usług i odpowiedzi w FAQ zostają zwykłym
+  zdaniem w Interze - wersalikowy akapit czyta się wolniej.
+- **Mono do liczb, grotesk do zdań.** Kwoty, daty, numery kroków i wycen są w mono z cyframi tabelarycznymi
+  i przekreślonym zerem (kolumny się wyrównują, 0 nie myli się z O). Zdania i tytuły w mono wyglądały jak
+  terminal, więc przeszły na grotesk.
+- **Interlinia 1, nie 0,9.** Przy 0,9 ogonki i kreski polskich liter (Ą, Ę, Ó, Ś) nachodziły na sąsiednią linię.
+  Ciężki krój z ujemnym trackingiem zjada też spacje - `word-spacing` je oddaje.
+- **Bez miękkich cieni i zaokrągleń.** Głębię dają ramki 2 px i odwrócenie kolorów (aktywny element = tusz
+  na papierze odwrócony), nie cień.
+
+Każda zmiana przeszła axe (WCAG 2.2 AA) w e2e i budżet JS - styl nie dodał ani jednego skryptu.
 
 ## Co zmienić przy wzroście
 

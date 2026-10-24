@@ -91,7 +91,7 @@ export default function LeadDialog({ intent, quote, open, onOpenChange }: { inte
         >
           <div className="flex items-start justify-between gap-6">
             <div>
-              <Dialog.Title className="font-serif text-2xl leading-tight text-ink">{copy.title}</Dialog.Title>
+              <Dialog.Title className="font-display text-2xl leading-tight text-ink uppercase tracking-[-0.02em]">{copy.title}</Dialog.Title>
               <p className="num mt-1 text-sm text-ink-muted">
                 {quote.isFromPrice ? 'od ' : ''}{formatPLN(quote.monthlyNet)} netto miesięcznie
               </p>
@@ -187,7 +187,7 @@ function Success({ response, intent }: { response: LeadResponse; intent: LeadInt
   const calendarHref = response.advisor?.calLink ?? '/kontakt#konsultacja'
   return (
     <div className="mt-6 grid gap-5" role="status">
-      <p className="font-serif text-xl text-ledger">
+      <p className="font-display text-xl text-ledger tracking-[-0.02em]">
         {intent === 'pdf' ? 'Wycena jest w drodze.' : 'Dziękujemy - konsultacja jest prawie umówiona.'}
       </p>
       {response.demo && (
@@ -196,7 +196,7 @@ function Success({ response, intent }: { response: LeadResponse; intent: LeadInt
       {response.advisor && (
         <div className="border-y border-rule py-4 text-sm">
           <p className="eyebrow">Twoja opiekunka</p>
-          <p className="mt-1 font-serif text-lg">{response.advisor.name}</p>
+          <p className="mt-1 font-display text-lg uppercase tracking-[-0.02em]">{response.advisor.name}</p>
           <p className="text-ink-muted">
             {response.temperature === 'hot'
               ? 'Odezwie się dziś. Możesz też od razu wybrać termin w jej kalendarzu.'

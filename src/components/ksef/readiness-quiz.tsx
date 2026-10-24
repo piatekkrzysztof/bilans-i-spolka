@@ -30,7 +30,7 @@ export function ReadinessQuiz({ compact = false }: { compact?: boolean }) {
     return (
       <div role="status" className="grid gap-6">
         <div className="flex items-end justify-between gap-6 border-b border-ink/70 pb-4">
-          <p className="font-serif text-2xl text-ink">{copy.title}</p>
+          <p className="font-display text-2xl text-ink uppercase tracking-[-0.02em]">{copy.title}</p>
           <p className="num font-serif text-3xl leading-none text-ledger">{result.score}<span className="text-base text-ink-muted">/100</span></p>
         </div>
         <p className="text-ink-muted">{copy.text}</p>
@@ -78,7 +78,7 @@ export function ReadinessQuiz({ compact = false }: { compact?: boolean }) {
                 {ANSWERS.map(answer => (
                   <label
                     key={answer.value}
-                    className="flex min-h-10 cursor-pointer items-center gap-2 rounded-[3px] border border-rule bg-surface px-3.5 text-sm text-ink-muted transition-colors has-[:checked]:border-ledger has-[:checked]:bg-ledger-soft has-[:checked]:text-ledger-deep has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-ledger"
+                    className="flex min-h-11 cursor-pointer items-center border-2 border-ink bg-paper px-4 font-mono text-xs uppercase tracking-[0.08em] text-ink transition-colors hover:bg-ledger-soft has-[:checked]:bg-ink has-[:checked]:font-bold has-[:checked]:text-paper has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-signal"
                   >
                     <input
                       type="radio"

@@ -39,7 +39,7 @@ function MoneyField({ label, hint, value, onChange }: { label: string; hint: str
           onChange={event => onChange(Math.max(0, event.target.valueAsNumber || 0))}
           className="num h-12 w-full bg-transparent px-4 text-right text-lg text-ink focus-visible:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
         />
-        <span className="pr-4 text-sm text-ink-muted">zł / rok</span>
+        <span className="whitespace-nowrap pr-4 font-mono text-xs uppercase text-ink-muted">zł / rok</span>
       </div>
     </div>
   )
@@ -101,9 +101,12 @@ export function TaxComparator({
             const best = r.form === result.best
             return (
               <article key={r.form} className={cn('flex flex-col p-6', best ? 'bg-ledger-soft' : 'bg-surface')} aria-label={FORM_LABELS[r.form]}>
-                <div className="flex items-baseline justify-between gap-2">
-                  <Heading className="font-serif text-xl text-ink">{FORM_LABELS[r.form]}</Heading>
-                  {best && <span className="eyebrow !text-ledger">Najkorzystniej</span>}
+                <div className="flex flex-col-reverse gap-2">
+                  <Heading className="font-display text-xl text-ink uppercase tracking-[-0.02em]">{FORM_LABELS[r.form]}</Heading>
+                  {/* Plakietka nad nazwą: obok niej nie mieści się w trzech kolumnach. */}
+                  <span className={cn('eyebrow flex items-center gap-2', !best && 'invisible')} aria-hidden={!best}>
+                    <span className="marker" />Najkorzystniej
+                  </span>
                 </div>
                 <p className="mt-5 text-xs text-ink-muted">Na rękę miesięcznie</p>
                 <p className="num font-serif text-[2.25rem] leading-tight text-ink">

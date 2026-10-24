@@ -6,31 +6,28 @@ import { SiteHeader } from '@/components/layout/site-header'
 import { siteUrl, umami } from '@/lib/site'
 import './globals.css'
 
-// Własne podzbiory (scripts/build-fonts.py): statyczne wagi, łacina + polskie znaki w jednym pliku na krój.
-// Wszystkie cztery pliki (87 kB) ładują się równolegle z CSS - bez drugiej rundy pobrań po latin-ext (ADR-010).
+// Własne podzbiory (scripts/build-fonts.py): łacina + polskie znaki, jeden plik na krój, wszystkie preloadowane
+// równolegle z CSS (ADR-010). Tekst: Inter 400-500, nagłówki: Inter 900 w wariancie display, dane: JetBrains Mono.
 // Fallback metrics (adjustFontFallback) trzyma CLS przy zamianie fontu.
-const newsreader = localFont({
-  variable: '--font-newsreader',
-  src: [{ path: './fonts/newsreader-500.woff2', weight: '500', style: 'normal' }],
-  display: 'swap',
-  adjustFontFallback: 'Times New Roman',
-})
-
-const newsreaderItalic = localFont({
-  variable: '--font-newsreader-italic',
-  src: [{ path: './fonts/newsreader-500-italic.woff2', weight: '500', style: 'italic' }],
-  display: 'swap',
-  adjustFontFallback: 'Times New Roman',
-})
-
-const inter = localFont({
-  variable: '--font-inter',
-  src: [
-    { path: './fonts/inter-400.woff2', weight: '400', style: 'normal' },
-    { path: './fonts/inter-500.woff2', weight: '500', style: 'normal' },
-  ],
+const interText = localFont({
+  variable: '--font-inter-text',
+  src: [{ path: './fonts/inter-text.woff2', weight: '400 500', style: 'normal' }],
   display: 'swap',
   adjustFontFallback: 'Arial',
+})
+
+const interDisplay = localFont({
+  variable: '--font-inter-display',
+  src: [{ path: './fonts/inter-display.woff2', weight: '900', style: 'normal' }],
+  display: 'swap',
+  adjustFontFallback: 'Arial',
+})
+
+const mono = localFont({
+  variable: '--font-jetbrains-mono',
+  src: [{ path: './fonts/jetbrains-mono.woff2', weight: '400 700', style: 'normal' }],
+  display: 'swap',
+  adjustFontFallback: false,
 })
 
 export const metadata: Metadata = {
@@ -52,13 +49,13 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#faf8f3',
+  themeColor: '#f3f2ee',
   colorScheme: 'light',
 }
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="pl" className={`${newsreader.variable} ${newsreaderItalic.variable} ${inter.variable}`}>
+    <html lang="pl" className={`${interText.variable} ${interDisplay.variable} ${mono.variable}`}>
       <body className="flex min-h-dvh flex-col">
         <a
           href="#tresc"

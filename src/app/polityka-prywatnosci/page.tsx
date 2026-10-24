@@ -48,7 +48,7 @@ export default function PrivacyPage() {
             <li key={section.title} className="grid gap-3 border-b border-rule py-8 md:grid-cols-[3rem_1fr]">
               <span aria-hidden="true" className="num font-serif text-xl text-ledger/60">{index + 1}</span>
               <div>
-                <h2 className="font-serif text-xl">{section.title}</h2>
+                <h2 className="font-display text-xl uppercase tracking-[-0.02em]">{section.title}</h2>
                 <p className="mt-2 text-ink-muted">{section.text}</p>
               </div>
             </li>

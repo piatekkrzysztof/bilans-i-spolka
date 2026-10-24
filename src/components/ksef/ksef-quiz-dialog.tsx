@@ -17,7 +17,7 @@ export default function KsefQuizDialog({ open, onOpenChange }: { open: boolean; 
           <div className="mb-6 flex items-start justify-between gap-6">
             <div>
               <p className="eyebrow">Test gotowości KSeF · 5 pytań</p>
-              <Dialog.Title className="mt-2 font-serif text-2xl text-ink">Czy Twoja firma jest gotowa?</Dialog.Title>
+              <Dialog.Title className="mt-2 font-display text-2xl text-ink uppercase tracking-[-0.02em]">Czy Twoja firma jest gotowa?</Dialog.Title>
             </div>
             <Dialog.Close className="grid size-11 shrink-0 place-items-center text-ink-muted hover:text-ink" aria-label="Zamknij">
               <X className="size-5" strokeWidth={1.5} aria-hidden="true" />

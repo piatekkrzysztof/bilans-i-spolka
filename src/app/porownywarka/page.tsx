@@ -25,7 +25,7 @@ export default async function ComparatorPage() {
       </div>
       <section className="border-t border-rule bg-surface">
         <div className="container-page flex flex-col items-start justify-between gap-6 py-14 md:flex-row md:items-center">
-          <p className="max-w-xl font-serif text-2xl leading-snug">Masz wynik? Teraz sprawdź, ile kosztuje księgowość dla tej formy.</p>
+          <p className="max-w-xl font-display text-[1.75rem] leading-tight tracking-[-0.02em]">Masz wynik? Teraz sprawdź, ile kosztuje księgowość dla tej formy.</p>
           <LinkButton href="/wycena" arrow>Przejdź do wyceny</LinkButton>
         </div>
       </section>

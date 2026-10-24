@@ -32,7 +32,7 @@ export function RichText({ value }: { value: RichTextValue }) {
     if (block._type === 'callout') {
       out.push(
         <aside key={block._key} className={`my-8 border-l-2 bg-surface px-6 py-5 ${block.tone === 'warning' ? 'border-brass' : 'border-ledger'}`}>
-          <p className="font-serif text-lg text-ink">{block.title}</p>
+          <p className="font-display text-lg text-ink uppercase tracking-[-0.02em]">{block.title}</p>
           <p className="mt-1.5 text-ink-muted">{block.text}</p>
         </aside>,
       )
@@ -58,7 +58,7 @@ export function RichText({ value }: { value: RichTextValue }) {
     }
     if (block.style === 'h2') out.push(<h2 key={block._key} className="mt-12 mb-4 text-[1.75rem] leading-tight text-ink">{renderSpans(block)}</h2>)
     else if (block.style === 'h3') out.push(<h3 key={block._key} className="mt-8 mb-3 text-xl text-ink">{renderSpans(block)}</h3>)
-    else if (block.style === 'blockquote') out.push(<blockquote key={block._key} className="my-6 font-serif text-xl text-ink">{renderSpans(block)}</blockquote>)
+    else if (block.style === 'blockquote') out.push(<blockquote key={block._key} className="my-6 font-display text-xl text-ink tracking-[-0.02em]">{renderSpans(block)}</blockquote>)
     else out.push(<p key={block._key} className="my-4">{renderSpans(block)}</p>)
   }
   return <div className="text-[1.0625rem] leading-[1.75] text-ink/90">{out}</div>

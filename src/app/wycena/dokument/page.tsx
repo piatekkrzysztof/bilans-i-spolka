@@ -51,18 +51,18 @@ async function QuoteDocument({ searchParams }: { searchParams: PageProps<'/wycen
   const today = new Date().toISOString().slice(0, 10)
 
   return (
-    <article className="mx-auto my-10 w-full max-w-[210mm] bg-surface px-[18mm] py-[16mm] shadow-[0_24px_48px_-32px_rgb(26_29_27/0.35)] print:my-0 print:shadow-none">
+    <article className="mx-auto my-10 w-full max-w-[210mm] bg-surface px-[18mm] py-[16mm] border-2 border-ink print:my-0 print:border-0">
       <header className="flex items-start justify-between gap-8 border-b border-ink pb-6">
         <div className="flex items-center gap-3">
           <LogoMark className="size-9" />
           <div>
-            <p className="font-serif text-2xl leading-none">Bilans <span className="italic text-ledger">&amp;</span> Spółka</p>
+            <p className="font-display text-2xl leading-none uppercase tracking-[-0.02em]">Bilans <span className="italic text-ledger">&amp;</span> Spółka</p>
             <p className="mt-1 text-xs text-ink-muted">{site.address.street}, {site.address.postalCode} {site.address.city}</p>
           </div>
         </div>
         <dl className="num text-right text-xs text-ink-muted">
           <dt className="sr-only">Numer</dt>
-          <dd className="font-serif text-lg text-ink">Wycena BS-{quoteNumber(canonical)}</dd>
+          <dd className="font-display text-lg text-ink uppercase tracking-[-0.02em]">Wycena <span className="num font-bold">BS-{quoteNumber(canonical)}</span></dd>
           <dt className="sr-only">Data</dt>
           <dd>{formatDate(today)}</dd>
           <dd>cennik {quote.priceListVersion}</dd>
@@ -93,7 +93,7 @@ async function QuoteDocument({ searchParams }: { searchParams: PageProps<'/wycen
         </tbody>
         <tfoot>
           <tr>
-            <th scope="row" className="pt-4 text-left font-serif text-lg font-medium">{quote.isFromPrice ? 'Razem od' : 'Razem'} netto</th>
+            <th scope="row" className="pt-4 text-left font-display text-lg font-medium uppercase tracking-[-0.02em]">{quote.isFromPrice ? 'Razem od' : 'Razem'} netto</th>
             <td className="num pt-4 text-right font-serif text-2xl">{formatPLN(quote.monthlyNet)}</td>
           </tr>
           <tr>
