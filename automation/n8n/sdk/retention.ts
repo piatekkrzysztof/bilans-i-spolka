@@ -1,4 +1,4 @@
-import { workflow, node, trigger, sticky, newCredential, ifElse, expr } from '@n8n/workflow-sdk';
+import { workflow, node, trigger, sticky, placeholder, newCredential, ifElse, expr } from '@n8n/workflow-sdk';
 
 const supabase = { supabaseApi: newCredential('Supabase · Bilans') };
 
@@ -16,7 +16,7 @@ const purge = node({
     name: 'purge_expired_leads()',
     parameters: {
       method: 'POST',
-      url: expr('{{ $vars.BILANS_SUPABASE_URL }}/rest/v1/rpc/purge_expired_leads'),
+      url: 'https://buvjolifagbjgouhmcxs.supabase.co/rest/v1/rpc/purge_expired_leads',
       authentication: 'predefinedCredentialType',
       nodeCredentialType: 'supabaseApi',
       sendBody: true,
@@ -55,7 +55,7 @@ const report = node({
     parameters: {
       resource: 'message',
       operation: 'sendMessage',
-      chatId: expr('{{ $vars.BILANS_TELEGRAM_CHAT_ID }}'),
+      chatId: placeholder('ID czatu Telegram biura'),
       text: expr('🗑️ Bilans · retencja RODO: usunięto {{ Number($json.body) }} leadów starszych niż 12 miesięcy ({{ $now.setZone("Europe/Warsaw").toFormat("dd.LL.yyyy") }}).'),
       additionalFields: { appendAttribution: false },
     },

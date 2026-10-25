@@ -16,7 +16,7 @@ const pending = node({
     name: 'Leady pending_delivery',
     parameters: {
       method: 'GET',
-      url: expr('{{ $vars.BILANS_SUPABASE_URL }}/rest/v1/leads'),
+      url: 'https://buvjolifagbjgouhmcxs.supabase.co/rest/v1/leads',
       authentication: 'predefinedCredentialType',
       nodeCredentialType: 'supabaseApi',
       sendQuery: true,
@@ -60,7 +60,7 @@ const markDelivered = node({
     name: 'Oznacz jako doręczony',
     parameters: {
       method: 'POST',
-      url: expr('{{ $vars.BILANS_SUPABASE_URL }}/rest/v1/rpc/mark_lead_delivery'),
+      url: 'https://buvjolifagbjgouhmcxs.supabase.co/rest/v1/rpc/mark_lead_delivery',
       authentication: 'predefinedCredentialType',
       nodeCredentialType: 'supabaseApi',
       sendBody: true,

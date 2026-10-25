@@ -2,7 +2,9 @@
 // Plik jest źródłem prawdy - automation/n8n/build.py wpisuje go do workflow.
 //
 // Jeden kształt leada dla obu wejść: payload z webhooka (po weryfikacji podpisu) i wiersz tabeli `leads`
-// z workflow „Bilans · lead-redelivery”. Węzeł dokłada adresata, etykiety i gotowe treści maili oraz powiadomienia,
+// z workflow „Bilans · lead-redelivery”. Ustawienia (adres Supabase, skrzynka testowa, nadawca, czat) przychodzą
+// w `config` z węzła „Konfiguracja” - n8n Cloud bez Variables nie ma $vars ani $env.
+// Węzeł dokłada adresata, etykiety i gotowe treści maili oraz powiadomienia,
 // więc dalsze węzły tylko wysyłają. Kwoty pochodzą wyłącznie z `quote` policzonego w API (src/domain/pricing.ts),
 // nigdy z modelu językowego.
 
@@ -25,7 +27,8 @@ const C = { paper: '#f3f2ee', surface: '#fafaf7', ink: '#0d0d0d', muted: '#47474
 const MONO = `'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace`
 const SANS = `Inter, -apple-system, 'Segoe UI', Arial, sans-serif`
 
-const siteUrl = ($vars.BILANS_SITE_URL || 'https://bilans-i-spolka.vercel.app').replace(/\/$/, '')
+const config = $json.config ?? {}
+const siteUrl = (config.siteUrl || 'https://bilans-i-spolka.vercel.app').replace(/\/$/, '')
 
 /*
  * Ten sam zapis co serializeQuoteParams w src/domain/quote-params.ts. Sandbox n8n nie ma URLSearchParams,
@@ -66,7 +69,7 @@ function fromRow(row) {
     type: 'lead.created',
     id: row.id,
     createdAt: row.created_at,
-    demo: $vars.BILANS_DEMO !== 'false',
+    demo: config.demo !== false,
     intent: row.intent,
     quote: row.quote,
     documentUrl: `${siteUrl}/wycena/dokument?${query}`,
@@ -124,8 +127,8 @@ const bookingUrl = lead.advisor?.calLink || `${siteUrl}/kontakt#konsultacja`
 const summary = `${LEGAL[q.input.legalForm]}, ${TAX[q.input.taxForm]}, ${DOCS[q.input.docs]} dok./mies.${q.input.vat ? ', VAT' : ''}`
 
 // Tryb demo: maile idą wyłącznie na skrzynkę testową SM-art, nigdy do osoby z formularza.
-const recipient = lead.demo ? $vars.BILANS_TEST_INBOX : lead.contact.email
-if (!recipient) throw new Error('Brak adresata: ustaw zmienną BILANS_TEST_INBOX w n8n')
+const recipient = lead.demo ? config.testInbox : lead.contact.email
+if (!recipient) throw new Error('Brak adresata: uzupełnij testInbox w węźle „Konfiguracja”')
 
 /* Fakty dla Claude - bez imienia, e-maila i telefonu (RODO). */
 const noteFacts = [
@@ -210,5 +213,6 @@ return {
     sendSequence: !hot && Boolean(lead.consents?.marketing),
     emails: { pdf: pdfEmail, consultation: consultationEmail, sequence },
     telegram,
+    config,
   },
 }

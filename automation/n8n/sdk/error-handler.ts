@@ -1,4 +1,4 @@
-import { workflow, node, trigger, sticky, expr } from '@n8n/workflow-sdk';
+import { workflow, node, trigger, sticky, placeholder, expr } from '@n8n/workflow-sdk';
 
 const onError = trigger({
   type: 'n8n-nodes-base.errorTrigger',
@@ -15,7 +15,7 @@ const alert = node({
     parameters: {
       resource: 'message',
       operation: 'sendMessage',
-      chatId: expr('{{ $vars.BILANS_TELEGRAM_CHAT_ID }}'),
+      chatId: placeholder('ID czatu Telegram biura'),
       text: expr('⚠️ {{ $json.workflow.name }}\nWęzeł: {{ $json.execution.lastNodeExecuted ?? "?" }}\nBłąd: {{ String($json.execution.error?.message ?? "brak opisu").slice(0, 300) }}\nTryb: {{ $json.execution.mode }}\n{{ $json.execution.url ?? "" }}'),
       additionalFields: { appendAttribution: false, disable_web_page_preview: true },
     },
@@ -26,7 +26,7 @@ const alert = node({
 });
 
 const about = sticky(
-  '## Bilans · error-handler\nUstawiony jako Error Workflow we wszystkich workflow Bilans. Alert idzie na czat z `BILANS_TELEGRAM_CHAT_ID`: nazwa workflow, węzeł, komunikat i link do wykonania. Bez danych z formularza - szczegóły są w wykonaniu w n8n.',
+  '## Bilans · error-handler\nUstawiony jako Error Workflow we wszystkich workflow Bilans. Alert idzie na czat biura: nazwa workflow, węzeł, komunikat i link do wykonania. Bez danych z formularza - szczegóły są w wykonaniu w n8n.',
   [onError, alert],
   { color: 7 },
 );

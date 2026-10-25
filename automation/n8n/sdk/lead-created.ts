@@ -8,7 +8,8 @@ const webhookIn = trigger({
   version: 2.2,
   config: {
     name: 'Webhook lead.created',
-    parameters: { httpMethod: 'POST', path: 'bilans/lead-created', authentication: 'none', responseMode: 'responseNode', options: { rawBody: true } },
+    parameters: { httpMethod: 'POST', path: 'bilans/lead-created', authentication: 'headerAuth', responseMode: 'responseNode', options: { rawBody: true } },
+    credentials: { httpHeaderAuth: newCredential('Bilans · klucz webhooka') },
     position: [0, 0],
   },
   output: [{ headers: { 'x-bs-timestamp': '1792940000', 'x-bs-signature': 'sha256=abc', 'idempotency-key': '6f1c' }, body: {} }],
@@ -60,6 +61,38 @@ const reject = node({
   config: { name: 'Odrzuć żądanie', parameters: { errorType: 'errorMessage', errorMessage: expr('Odrzucony webhook lead.created: {{ $json.reason }}') }, position: [880, 160] },
 });
 
+const settings = node({
+  type: 'n8n-nodes-base.set',
+  version: 3.4,
+  config: {
+    name: 'Konfiguracja',
+    notes: 'Jawne ustawienia Bilans (plan bez Variables). Sekret webhooka NIE tutaj - jest w poświadczeniu Header Auth.',
+    parameters: {
+      mode: 'manual',
+      includeOtherFields: true,
+      assignments: {
+        assignments: [{
+          id: 'bilans-config',
+          name: 'config',
+          type: 'object',
+          value: "={{ {
+  supabaseUrl: 'https://buvjolifagbjgouhmcxs.supabase.co',
+  siteUrl: 'https://bilans-i-spolka.vercel.app',
+  demo: true,
+  testInbox: '',
+  mailFrom: '',
+  replyTo: '',
+  telegramChatId: ''
+} }}",
+        }],
+      },
+      options: {},
+    },
+    position: [440, -200],
+  },
+  output: [{ valid: true, lead: { id: '6f1c' }, config: { supabaseUrl: 'https://buvjolifagbjgouhmcxs.supabase.co', testInbox: 'demo@example.com' } }],
+});
+
 const lead = node({
   type: 'n8n-nodes-base.code',
   version: 2,
@@ -80,7 +113,7 @@ const claim = node({
     name: 'Przejmij lead',
     parameters: {
       method: 'POST',
-      url: expr('{{ $vars.BILANS_SUPABASE_URL }}/rest/v1/processed_webhooks'),
+      url: expr('{{ $json.config.supabaseUrl }}/rest/v1/processed_webhooks'),
       authentication: 'predefinedCredentialType',
       nodeCredentialType: 'supabaseApi',
       sendHeaders: true,
@@ -208,7 +241,7 @@ const sendPdf = node({
       sendBody: true,
       contentType: 'json',
       specifyBody: 'json',
-      jsonBody: expr('{{ (() => { const lead = $("Lead").item.json; const text = String($("Notka od Claude").item.json.merged_response ?? "").trim(); const safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); const block = safe ? `<p style="margin:24px 0 0;padding:16px 18px;border-left:3px solid #e61919;background:#f3f2ee;">${safe}</p>` : ""; return JSON.stringify({ from: $vars.BILANS_MAIL_FROM, to: [lead.recipient], reply_to: $vars.BILANS_REPLY_TO || undefined, subject: lead.emails.pdf.subject, html: lead.emails.pdf.html.replace("%%NOTE%%", block), attachments: [{ filename: lead.fileName, path: $json.url }] }); })() }}'),
+      jsonBody: expr('{{ (() => { const lead = $("Lead").item.json; const text = String($("Notka od Claude").item.json.merged_response ?? "").trim(); const safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); const block = safe ? `<p style="margin:24px 0 0;padding:16px 18px;border-left:3px solid #e61919;background:#f3f2ee;">${safe}</p>` : ""; return JSON.stringify({ from: lead.config.mailFrom, to: [lead.recipient], reply_to: lead.config.replyTo || undefined, subject: lead.emails.pdf.subject, html: lead.emails.pdf.html.replace("%%NOTE%%", block), attachments: [{ filename: lead.fileName, path: $json.url }] }); })() }}'),
       options: {},
     },
     credentials: resend,
@@ -224,7 +257,7 @@ const logPdf = node({
     name: 'Zapisz quote_pdf.sent',
     parameters: {
       method: 'POST',
-      url: expr('{{ $vars.BILANS_SUPABASE_URL }}/rest/v1/lead_events'),
+      url: expr('{{ $("Lead").item.json.config.supabaseUrl }}/rest/v1/lead_events'),
       authentication: 'predefinedCredentialType',
       nodeCredentialType: 'supabaseApi',
       sendBody: true,
@@ -254,7 +287,7 @@ const sendConsultation = node({
       sendBody: true,
       contentType: 'json',
       specifyBody: 'json',
-      jsonBody: expr('{{ JSON.stringify({ from: $vars.BILANS_MAIL_FROM, to: [$("Lead").item.json.recipient], reply_to: $vars.BILANS_REPLY_TO || undefined, subject: $("Lead").item.json.emails.consultation.subject, html: $("Lead").item.json.emails.consultation.html }) }}'),
+      jsonBody: expr('{{ JSON.stringify({ from: $("Lead").item.json.config.mailFrom, to: [$("Lead").item.json.recipient], reply_to: $("Lead").item.json.config.replyTo || undefined, subject: $("Lead").item.json.emails.consultation.subject, html: $("Lead").item.json.emails.consultation.html }) }}'),
       options: {},
     },
     credentials: resend,
@@ -270,7 +303,7 @@ const logConsultation = node({
     name: 'Zapisz consultation.confirmed',
     parameters: {
       method: 'POST',
-      url: expr('{{ $vars.BILANS_SUPABASE_URL }}/rest/v1/lead_events'),
+      url: expr('{{ $("Lead").item.json.config.supabaseUrl }}/rest/v1/lead_events'),
       authentication: 'predefinedCredentialType',
       nodeCredentialType: 'supabaseApi',
       sendBody: true,
@@ -309,7 +342,7 @@ const telegramOffice = node({
     parameters: {
       resource: 'message',
       operation: 'sendMessage',
-      chatId: expr('{{ $vars.BILANS_TELEGRAM_CHAT_ID }}'),
+      chatId: expr('{{ $("Lead").item.json.config.telegramChatId }}'),
       text: expr('{{ $("Lead").item.json.telegram }}'),
       additionalFields: { appendAttribution: false, disable_web_page_preview: true },
     },
@@ -353,7 +386,7 @@ const sequenceMail1 = node({
       sendBody: true,
       contentType: 'json',
       specifyBody: 'json',
-      jsonBody: expr('{{ JSON.stringify({ from: $vars.BILANS_MAIL_FROM, to: [$("Lead").item.json.recipient], subject: $("Lead").item.json.emails.sequence[0].subject, html: $("Lead").item.json.emails.sequence[0].html }) }}'),
+      jsonBody: expr('{{ JSON.stringify({ from: $("Lead").item.json.config.mailFrom, to: [$("Lead").item.json.recipient], subject: $("Lead").item.json.emails.sequence[0].subject, html: $("Lead").item.json.emails.sequence[0].html }) }}'),
       options: {},
     },
     credentials: resend,
@@ -377,7 +410,7 @@ const sequenceMail2 = node({
       sendBody: true,
       contentType: 'json',
       specifyBody: 'json',
-      jsonBody: expr('{{ JSON.stringify({ from: $vars.BILANS_MAIL_FROM, to: [$("Lead").item.json.recipient], subject: $("Lead").item.json.emails.sequence[1].subject, html: $("Lead").item.json.emails.sequence[1].html }) }}'),
+      jsonBody: expr('{{ JSON.stringify({ from: $("Lead").item.json.config.mailFrom, to: [$("Lead").item.json.recipient], subject: $("Lead").item.json.emails.sequence[1].subject, html: $("Lead").item.json.emails.sequence[1].html }) }}'),
       options: {},
     },
     credentials: resend,
@@ -401,7 +434,7 @@ const sequenceMail3 = node({
       sendBody: true,
       contentType: 'json',
       specifyBody: 'json',
-      jsonBody: expr('{{ JSON.stringify({ from: $vars.BILANS_MAIL_FROM, to: [$("Lead").item.json.recipient], subject: $("Lead").item.json.emails.sequence[2].subject, html: $("Lead").item.json.emails.sequence[2].html }) }}'),
+      jsonBody: expr('{{ JSON.stringify({ from: $("Lead").item.json.config.mailFrom, to: [$("Lead").item.json.recipient], subject: $("Lead").item.json.emails.sequence[2].subject, html: $("Lead").item.json.emails.sequence[2].html }) }}'),
       options: {},
     },
     credentials: resend,
@@ -411,7 +444,7 @@ const sequenceMail3 = node({
 });
 
 const intro = sticky(
-  '## Bilans · lead-created\nWebhook z `/api/lead` (src/server/lead-intake.ts) albo wywołanie z **Bilans · lead-redelivery**.\n\n1. HMAC-SHA256 z surowego body, okno 5 min. Zły podpis = 401 i alert.\n2. Idempotencja: wpis do `processed_webhooks` (source `n8n.lead-created`). Duplikat = 200, nic się nie wysyła.\n3. Odpowiedź 202 w ułamku sekundy, reszta asynchronicznie.\n4. PDF: notka od Claude (bez danych osobowych, bez kwot) → PDF.co z `/wycena/dokument` → Resend.\n5. Gorący lead albo konsultacja → Telegram do biura. Zimny ze zgodą marketingową → 3 maile (dzień 2, 5, 10).\n\nTryb demo: maile tylko na `BILANS_TEST_INBOX`. Zmienne: Settings > Variables (`BILANS_*`).',
+  '## Bilans · lead-created\nWebhook z `/api/lead` (src/server/lead-intake.ts) albo wywołanie z **Bilans · lead-redelivery**.\n\n1. HMAC-SHA256 z surowego body, okno 5 min. Zły podpis = 401 i alert.\n2. Idempotencja: wpis do `processed_webhooks` (source `n8n.lead-created`). Duplikat = 200, nic się nie wysyła.\n3. Odpowiedź 202 w ułamku sekundy, reszta asynchronicznie.\n4. PDF: notka od Claude (bez danych osobowych, bez kwot) → PDF.co z `/wycena/dokument` → Resend.\n5. Gorący lead albo konsultacja → Telegram do biura. Zimny ze zgodą marketingową → 3 maile (dzień 2, 5, 10).\n\nTryb demo: maile tylko na `testInbox`. Ustawienia w węźle **Konfiguracja**, klucz webhooka w poświadczeniu Header Auth.',
   [verify, signatureOk, lead, claim, isNew],
   { color: 7 },
 );
@@ -420,12 +453,12 @@ export default workflow('bilans-lead-created', 'Bilans · lead-created')
   .add(webhookIn)
   .to(verify)
   .to(signatureOk
-    .onTrue(lead.to(claim).to(isNew
+    .onTrue(settings.to(lead).to(claim).to(isNew
       .onTrue(respond202)
       .onFalse(respondDuplicate)))
     .onFalse(respond401.to(reject)))
   .add(fromRedelivery)
-  .to(lead)
+  .to(settings)
   .add(respond202)
   .to(byIntent
     .onCase(0, note.to(pdf).to(sendPdf).to(logPdf))

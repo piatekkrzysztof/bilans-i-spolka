@@ -37,31 +37,31 @@ Konfigurator ──► POST /api/lead ──► Supabase (lead + zdarzenie outbo
 
 Kod węzłów Code żyje w `code/*.js`, a szkielety workflow (n8n Workflow SDK) w `sdk/*.ts`.
 `python automation/n8n/build.py lead-created` składa jedno z drugim. `tests/unit/n8n-code.test.ts` uruchamia kod
-węzłów tak jak sandbox n8n (bez `URL` i `URLSearchParams`) i sprawdza zgodność z domeną: numer wyceny, adres
+węzłów tak jak sandbox n8n Cloud (bez `$vars`, `$env`, `URL` i `URLSearchParams`) i sprawdza zgodność z domeną: numer wyceny, adres
 dokumentu, podpis.
 
 ## Konfiguracja
 
-**Zmienne n8n** (Settings > Variables) - workflow nie zawierają żadnych sekretów ani adresów:
+Plan n8n Cloud nie ma Variables, a Cloud blokuje `$env` - węzeł Code nie ma więc skąd wziąć sekretu
+(w Ciepło Południa rozwiązał to self-hosted n8n z `$env`). Tutaj (ADR-013):
 
-| Zmienna | Wartość |
-| --- | --- |
-| `BILANS_WEBHOOK_SECRET` | ta sama co `N8N_WEBHOOK_SECRET` w Vercelu (64 znaki hex) |
-| `BILANS_SUPABASE_URL` | `https://<ref>.supabase.co` |
-| `BILANS_TEST_INBOX` | skrzynka SM-art - w trybie demo wszystkie maile idą tylko tutaj |
-| `BILANS_MAIL_FROM` | nadawca ze zweryfikowanej domeny w Resend, np. `Bilans & Spółka <wyceny@…>` |
-| `BILANS_TELEGRAM_CHAT_ID` | czat biura na powiadomienia i alerty |
-| `BILANS_REPLY_TO`, `BILANS_SITE_URL`, `BILANS_DEMO` | opcjonalne; `BILANS_DEMO=false` dopiero przy prawdziwym biurze |
-
-**Poświadczenia:** `Supabase · Bilans` (host + klucz `service_role`), Resend jako Bearer Auth, Anthropic,
-Telegram. PDF.co działa na kredytach n8n Cloud.
+- **Klucz webhooka** - poświadczenie `Bilans · klucz webhooka` (Header Auth): nazwa `x-bs-webhook-key`,
+  wartość = `N8N_WEBHOOK_SECRET` z Vercela. n8n odrzuca żądanie bez poprawnego klucza, zanim workflow ruszy.
+  Węzeł „Weryfikuj podpis” liczy HMAC kluczem z tego, już sprawdzonego nagłówka - podpis nadal chroni treść
+  i okno 5 minut, a sekret nie leży ani w workflow, ani w eksporcie.
+- **Jawne ustawienia** - węzeł „Konfiguracja” w `lead-created`: `supabaseUrl`, `siteUrl`, `demo`,
+  `testInbox` (w trybie demo jedyny adresat maili), `mailFrom` (zweryfikowana domena w Resend), `replyTo`,
+  `telegramChatId`. W `lead-redelivery` i `retention` adres Supabase jest wpisany w węzłach, czat Telegram
+  w węzłach `Raport retencji` i `Alert na Telegram`.
+- **Poświadczenia:** `Supabase · Bilans` (host + klucz `service_role`), Resend jako Bearer Auth, Anthropic,
+  Telegram. PDF.co działa na kredytach n8n Cloud.
 
 **Vercel (produkcja):** `N8N_WEBHOOK_URL` i `N8N_WEBHOOK_SECRET`. Lokalnie adresu webhooka nie ustawiamy -
 e2e na lokalnym buildzie nie może wysyłać leadów do produkcyjnego n8n.
 
 ## Kontrakt zdarzenia `lead.created`
 
-Wysyłane przez `src/server/lead-intake.ts`. Nagłówki: `x-bs-timestamp`, `x-bs-signature`, `idempotency-key`.
+Wysyłane przez `src/server/lead-intake.ts`. Nagłówki: `x-bs-webhook-key`, `x-bs-timestamp`, `x-bs-signature`, `idempotency-key`.
 
 | Pole | Opis |
 | --- | --- |

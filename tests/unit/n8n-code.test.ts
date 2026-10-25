@@ -1,6 +1,6 @@
 /**
- * Kod węzłów Code z automation/n8n/code uruchomiony tak jak w n8n: top-level `return`, zmienne $json/$vars/$input,
- * bez URL i URLSearchParams (sandbox n8n ich nie ma). Pilnuje zgodności z domeną: numer wyceny i adres dokumentu
+ * Kod węzłów Code z automation/n8n/code uruchomiony tak jak w n8n Cloud: top-level `return`, $json i $input,
+ * bez $vars i $env (plan bez Variables) oraz bez URL i URLSearchParams (sandbox ich nie ma). Pilnuje zgodności z domeną: numer wyceny i adres dokumentu
  * w mailu muszą być te same co na stronie, a podpis - ten sam co w src/server/webhook.ts.
  */
 import { createRequire } from 'node:module'
@@ -13,7 +13,8 @@ import { signPayload } from '@/server/webhook'
 
 const AsyncFunction = Object.getPrototypeOf(async () => {}).constructor
 const source = (name: string) => readFileSync(`automation/n8n/code/${name}.js`, 'utf8')
-const vars = { BILANS_TEST_INBOX: 'demo@sm-art.example', BILANS_WEBHOOK_SECRET: 'sekret-testowy' }
+const config = { testInbox: 'demo@sm-art.example', siteUrl: 'https://bilans-i-spolka.vercel.app' }
+const secret = 'sekret-testowy'
 
 interface LeadJson {
   number: string
@@ -28,15 +29,15 @@ interface LeadJson {
 interface VerifyJson { valid: boolean; reason?: string; lead?: { id: string } }
 
 function runLead(json: unknown) {
-  const run = new AsyncFunction('$json', '$vars', 'URL', 'URLSearchParams', source('lead'))
-  return run(json, vars, undefined, undefined) as Promise<{ json: LeadJson }>
+  const run = new AsyncFunction('$json', '$vars', '$env', 'URL', 'URLSearchParams', source('lead'))
+  return run({ ...(json as object), config }, undefined, undefined, undefined, undefined) as Promise<{ json: LeadJson }>
 }
 
 function runVerify(rawBody: string, headers: Record<string, string>) {
-  const run = new AsyncFunction('require', '$vars', '$input', source('verify-signature'))
+  const run = new AsyncFunction('require', '$vars', '$env', '$input', source('verify-signature'))
   const item = { json: { headers }, binary: { data: {} } }
   const helpers = { getBinaryDataBuffer: async () => Buffer.from(rawBody) }
-  return run.call({ helpers }, createRequire(import.meta.url), vars, { first: () => item }) as Promise<Array<{ json: VerifyJson }>>
+  return run.call({ helpers }, createRequire(import.meta.url), undefined, undefined, { first: () => item }) as Promise<Array<{ json: VerifyJson }>>
 }
 
 const quote = calculateQuote({ legalForm: 'jdg', taxForm: 'skala', docs: '11-20', vat: true, foreign: false, employees: 2, contracts: 0, addons: ['ksef'] }, priceListFixture)
@@ -76,7 +77,7 @@ describe('n8n: węzeł Lead', () => {
 
   it('w trybie demo wysyła tylko na skrzynkę testową i nie przekazuje modelowi danych osobowych', async () => {
     const lead = (await runLead({ lead: payload })).json
-    expect(lead.recipient).toBe(vars.BILANS_TEST_INBOX)
+    expect(lead.recipient).toBe(config.testInbox)
     expect(lead.noteFacts).not.toMatch(/Anna|Nowak|example\.com/)
     expect(lead.emails.pdf.html).toContain('%%NOTE%%')
     expect(lead.emails.pdf.html).toContain('&lt;b&gt;Anna&lt;/b&gt;, oto Twoja wycena')
@@ -96,8 +97,9 @@ describe('n8n: weryfikacja podpisu', () => {
   const now = Math.floor(Date.now() / 1000)
   const signed = (body = raw, timestamp = now) => ({
     'x-bs-timestamp': String(timestamp),
-    'x-bs-signature': signPayload(vars.BILANS_WEBHOOK_SECRET, body, timestamp),
+    'x-bs-signature': signPayload(secret, body, timestamp),
     'idempotency-key': payload.id,
+    'x-bs-webhook-key': secret,
   })
 
   it('przyjmuje podpis z API', async () => {
@@ -109,5 +111,6 @@ describe('n8n: weryfikacja podpisu', () => {
     expect((await runVerify(raw.replace('pdf', 'consultation'), signed()))[0]!.json).toMatchObject({ valid: false, reason: 'invalid signature' })
     expect((await runVerify(raw, signed(raw, now - 600)))[0]!.json).toMatchObject({ valid: false, reason: 'stale or missing timestamp' })
     expect((await runVerify(raw, { ...signed(), 'idempotency-key': 'inny' }))[0]!.json).toMatchObject({ valid: false, reason: 'idempotency key mismatch' })
+    expect((await runVerify(raw, { ...signed(), 'x-bs-webhook-key': 'inny-klucz' }))[0]!.json).toMatchObject({ valid: false, reason: 'invalid signature' })
   })
 })
