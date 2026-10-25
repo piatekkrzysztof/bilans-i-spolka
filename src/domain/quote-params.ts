@@ -77,6 +77,16 @@ export function serializeQuoteParams(input: QuoteInput): URLSearchParams {
   return params
 }
 
+/**
+ * Numer wyceny z kanonicznych parametrów: ta sama wycena ma zawsze ten sam numer, bez bazy danych.
+ * n8n liczy go tak samo (automation/n8n/code/lead.js), więc numer w mailu zgadza się z PDF.
+ */
+export function quoteNumber(params: URLSearchParams | string): string {
+  let hash = 0
+  for (const char of params.toString()) hash = (hash * 31 + char.charCodeAt(0)) >>> 0
+  return `BS-${hash.toString(36).toUpperCase().padStart(6, '0').slice(0, 6)}`
+}
+
 export function quoteHref(input: QuoteInput, pathname = '/wycena'): string {
   return `${pathname}?${serializeQuoteParams(input).toString()}`
 }

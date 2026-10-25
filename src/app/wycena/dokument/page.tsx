@@ -7,22 +7,16 @@ import { getPriceList, getSiteSettings } from '@/content/repository'
 import { formatPLN } from '@/domain/money'
 import { calculateQuote, type QuoteLine } from '@/domain/pricing'
 import { LEGAL_FORM_LABELS, TAX_FORM_LABELS } from '@/domain/quote'
-import { parseQuoteParams, serializeQuoteParams } from '@/domain/quote-params'
+import { parseQuoteParams, quoteNumber, serializeQuoteParams } from '@/domain/quote-params'
 import { formatDate } from '@/lib/format'
 
 /**
- * Dokument wyceny - ta sama strona jest szablonem PDF: n8n wysyła jej adres do Gotenberga
- * (Chromium → PDF), więc PDF i podgląd w przeglądarce nie mogą się rozjechać.
+ * Dokument wyceny - ta sama strona jest szablonem PDF: n8n wysyła jej adres do PDF.co
+ * (URL → PDF, media print), więc PDF i podgląd w przeglądarce nie mogą się rozjechać.
  */
 export const metadata: Metadata = {
   title: 'Dokument wyceny',
   robots: { index: false, follow: false },
-}
-
-function quoteNumber(params: URLSearchParams): string {
-  let hash = 0
-  for (const char of params.toString()) hash = (hash * 31 + char.charCodeAt(0)) >>> 0
-  return hash.toString(36).toUpperCase().padStart(6, '0').slice(0, 6)
 }
 
 function Rows({ lines }: { lines: QuoteLine[] }) {
@@ -62,7 +56,7 @@ async function QuoteDocument({ searchParams }: { searchParams: PageProps<'/wycen
         </div>
         <dl className="num text-right text-xs text-ink-muted">
           <dt className="sr-only">Numer</dt>
-          <dd className="font-display text-lg text-ink uppercase tracking-[-0.02em]">Wycena <span className="num font-bold">BS-{quoteNumber(canonical)}</span></dd>
+          <dd className="font-display text-lg text-ink uppercase tracking-[-0.02em]">Wycena <span className="num font-bold">{quoteNumber(canonical)}</span></dd>
           <dt className="sr-only">Data</dt>
           <dd>{formatDate(today)}</dd>
           <dd>cennik {quote.priceListVersion}</dd>
