@@ -98,7 +98,7 @@ export default async function HomePage() {
       </section>
 
       {/* 2a. Bilans - nazwa biura dosłownie: karta, na której obie kolumny muszą się zgadzać. */}
-      <section className="cv-auto container-page section-space grid items-start gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-20" aria-labelledby="bilans">
+      <section className="container-page section-space grid items-start gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-20" aria-labelledby="bilans">
         <ArchivePlate image={ARCHIVE.balance} figure={1} sizes="(min-width: 1024px) 640px, 100vw" />
         <div className="grid content-start gap-8 lg:sticky lg:top-28">
           <h2 id="bilans" className="text-[2rem] leading-[0.95] text-ink md:text-2xl" data-reveal>
@@ -124,7 +124,7 @@ export default async function HomePage() {
       </section>
 
       {/* 3. Dla kogo */}
-      <section className="cv-auto container-page section-space" aria-labelledby="dla-kogo">
+      <section className="container-page section-space" aria-labelledby="dla-kogo">
         <SectionHeading id="dla-kogo" index="101" eyebrow="Dla kogo" title="Z czym przychodzą klienci." />
         <ul className="mt-12 grid gap-px border-2 border-ink bg-ink sm:grid-cols-2 lg:grid-cols-4">
           {AUDIENCES.map(item => (
@@ -141,7 +141,7 @@ export default async function HomePage() {
       </section>
 
       {/* 4. Jak wygląda współpraca */}
-      <section className="cv-auto border-t border-rule bg-surface" aria-labelledby="miesiac">
+      <section className="border-t border-rule bg-surface" aria-labelledby="miesiac">
         <div className="container-page section-space">
           <SectionHeading
             id="miesiac"
@@ -157,7 +157,7 @@ export default async function HomePage() {
       </section>
 
       {/* 5. KSeF - termin ustawowy, więc jedyne miejsce z taśmą ostrzegawczą. */}
-      <section className="cv-auto bg-ink text-paper" aria-labelledby="ksef">
+      <section className="bg-ink text-paper" aria-labelledby="ksef">
         <div aria-hidden="true" className="hazard h-3" />
         <div className="container-page grid items-end gap-10 py-16 lg:grid-cols-[1fr_auto] lg:py-20">
           <div>
@@ -179,7 +179,7 @@ export default async function HomePage() {
       </section>
 
       {/* 6. Zespół */}
-      <section className="cv-auto container-page section-space" aria-labelledby="zespol">
+      <section className="container-page section-space" aria-labelledby="zespol">
         <SectionHeading
           id="zespol"
           index="303"
@@ -206,7 +206,7 @@ export default async function HomePage() {
       </section>
 
       {/* 7. Opinie */}
-      <section className="cv-auto border-y-2 border-ink bg-surface" aria-labelledby="opinie">
+      <section className="border-y-2 border-ink bg-surface" aria-labelledby="opinie">
         <div className="container-page section-space">
           <SectionHeading id="opinie" index="404" eyebrow="Opinie" title="Klienci po pierwszym roku." />
           <ul className="mt-12 grid gap-px border-2 border-ink bg-ink md:grid-cols-3">
@@ -229,7 +229,7 @@ export default async function HomePage() {
       </section>
 
       {/* 8. Porównanie */}
-      <section className="cv-auto container-page section-space" aria-labelledby="porownanie">
+      <section className="container-page section-space" aria-labelledby="porownanie">
         <SectionHeading id="porownanie" index="505" eyebrow="Porównanie" title="My kontra typowe biuro." />
         {/*
           Jedna tabela: na telefonie wiersze układają się w karty samym CSS-em (tabela przewijana w bok wyglądała na uciętą),
@@ -263,7 +263,7 @@ export default async function HomePage() {
       </section>
 
       {/* 9. FAQ */}
-      <section className="cv-auto border-t-2 border-ink bg-surface" aria-labelledby="faq">
+      <section className="border-t-2 border-ink bg-surface" aria-labelledby="faq">
         <div className="container-page section-space grid gap-12 lg:grid-cols-[1fr_1.6fr]">
           <div className="grid content-start gap-10 lg:sticky lg:top-28 lg:self-start">
             <SectionHeading id="faq" index="606" eyebrow="Pytania" title="Zanim zadzwonisz." stacked />
@@ -274,7 +274,7 @@ export default async function HomePage() {
       </section>
 
       {/* 9a. Kraków - biuro na mapie miasta; ryciny pokazują miasto, nie siedzibę firmy. */}
-      <section className="cv-auto container-page section-space" aria-labelledby="krakow">
+      <section className="container-page section-space" aria-labelledby="krakow">
         <SectionHeading
           id="krakow"
           index="707"
@@ -304,7 +304,7 @@ export default async function HomePage() {
       </section>
 
       {/* 10. Końcowe CTA */}
-      <section className="cv-auto bg-ink text-paper" aria-labelledby="cta">
+      <section className="bg-ink text-paper" aria-labelledby="cta">
         <div className="container-page grid gap-10 py-20 lg:grid-cols-[1.5fr_1fr] lg:py-24">
           <div>
             <p className="eyebrow !text-paper">[ 20 min / wideo / bez zobowiązań ]</p>

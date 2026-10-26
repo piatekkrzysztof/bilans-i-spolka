@@ -22,7 +22,7 @@ export async function SiteFooter() {
   ]
 
   return (
-    <footer className="cv-auto mt-auto border-t-2 border-ink bg-paper print:hidden">
+    <footer className="mt-auto border-t-2 border-ink bg-paper print:hidden">
       <div className="container-page">
         <div className="grid gap-px border-x-2 border-b-2 border-ink bg-ink md:grid-cols-[1.3fr_repeat(3,1fr)]">
           <div className="bg-paper p-6">
