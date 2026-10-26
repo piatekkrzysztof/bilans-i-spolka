@@ -218,6 +218,11 @@
   }
 }
 
+/* Druk i PDF wyceny (PDF.co w n8n drukuje /wycena/dokument): cała kartka w kolorze karty, bez szarego pasa pod nią. */
+@media print {
+  html, body { background: var(--color-surface); }
+}
+
 /*
  * Sekcje poniżej pierwszego ekranu: przeglądarka nie liczy ich stylu i układu, dopóki nie zbliżą się do widoku.
  * Strona główna ma ~16 000 px na telefonie - bez tego pierwsze malowanie czekało na układ całości (LCP, ADR-010).
