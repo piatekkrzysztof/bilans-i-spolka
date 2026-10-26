@@ -142,7 +142,17 @@ Granice, żeby brutalizm nie odebrał przejrzystości:
 - **Bez miękkich cieni i zaokrągleń.** Głębię dają ramki 2 px i odwrócenie kolorów (aktywny element = tusz
   na papierze odwrócony), nie cień.
 
-Każda zmiana przeszła axe (WCAG 2.2 AA) w e2e i budżet JS - styl nie dodał ani jednego skryptu.
+**Ryciny zamiast zdjęć stockowych.** Firma, zespół i biuro są fikcyjne, więc strona nie pokazuje „biura” ani
+„księgowej” ze stocku. Pokazuje prawdziwe dokumenty z domeny publicznej: kartę bilansu kasowego z 1898 roku
+(nazwa biura dosłownie - „bilans się zgadza”), księgę dzienną, plan Krakowa z 1836 i krakowską kamienicę.
+Jedna obróbka dla wszystkich (skala szarości, kontrast, `mix-blend-multiply` na papierze), podpis „Ryc. N” ze
+źródłem przy każdej - jak plansza w instrukcji technicznej.
+
+**Ruch.** Elementy sekcji wchodzą przy przewijaniu (przesunięcie 24 px i przezroczystość, co 80 ms), sterowane
+jednym `IntersectionObserver` (`reveal-observer.tsx`). Bez JS wszystko jest widoczne od razu, elementy na
+pierwszym ekranie nie animują się wcale, a przy `prefers-reduced-motion` znika przesunięcie.
+
+Każda zmiana przeszła axe (WCAG 2.2 AA) w e2e i budżet JS.
 
 ## Co zmienić przy wzroście
 

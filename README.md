@@ -23,6 +23,11 @@ Strona odpowiada na pytanie „ile to kosztuje?”, zanim klient zadzwoni, i zam
 nagłówki w Inter Display 900, liczby w JetBrains Mono. Czerwień nigdy nie stoi przy kwocie (w księgowości to
 strata), a tekst ciągły zostaje zwykłym zdaniem. Zasady i granice stylu: [ADR-012](docs/ARCHITECTURE.md).
 
+Ryciny to prawdziwe dokumenty z domeny publicznej, nie zdjęcia biura: karta bilansu kasowego z 1898 i księga
+dzienna z 1899 (A. R. Barrett, *Modern Banking Methods*, 1903), plan Krakowa z 1836 (Teofil Żebrawski) i kamienica
+przy Garncarskiej 14 sprzed 1900. Źródła i podpisy: `src/content/archive.ts`, obróbka:
+`scripts/build-archive-images.mjs`.
+
 ## Stos
 
 Next.js 16 (App Router, Cache Components) · TypeScript strict · Tailwind CSS 4 (tokeny w `@theme`) · Radix UI ·

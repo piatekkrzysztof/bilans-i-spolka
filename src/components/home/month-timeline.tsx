@@ -38,8 +38,9 @@ export function MonthTimeline({ events }: { events: MonthEvent[] }) {
       {/* Oś - przyklejona, żeby przy przewijaniu listy było widać, gdzie jesteśmy w miesiącu. */}
       <div className="order-2 min-w-0 lg:order-1">
         <div className="lg:sticky lg:top-32" aria-hidden="true">
-          <div className="relative overflow-x-auto pb-4">
-            <div className="relative min-w-[40rem]">
+          {/* 31 kolumn mieści się na telefonie; podpisane są tam tylko dni z terminami, reszta byłaby nieczytelna. */}
+          <div className="relative pb-4">
+            <div className="relative">
               <div className="grid grid-cols-31 border-b-2 border-ink">
                 {DAYS.map(day => {
                   const event = events.find(e => e.day === day)
@@ -73,8 +74,8 @@ export function MonthTimeline({ events }: { events: MonthEvent[] }) {
                   <span
                     key={day}
                     className={cn(
-                      'num text-center text-[0.6875rem] transition-colors duration-300',
-                      current?.day === day ? 'bg-ink font-bold text-paper' : events.some(e => e.day === day) ? 'font-bold text-ink' : 'text-ink-muted',
+                      'num text-center text-xs transition-colors duration-300',
+                      current?.day === day ? 'bg-ink font-bold text-paper' : events.some(e => e.day === day) ? 'font-bold text-ink' : 'text-ink-muted max-md:invisible',
                     )}
                   >
                     {day}
@@ -98,7 +99,7 @@ export function MonthTimeline({ events }: { events: MonthEvent[] }) {
             data-index={index}
             className={cn(
               // Aktywny krok wyróżnia gruba czerwona linia, nie przygaszanie reszty - tekst zawsze trzyma kontrast AA.
-              'relative grid grid-cols-[4rem_1fr] gap-4 border-t-2 border-ink py-6 lg:min-h-[40vh] lg:py-10',
+              'relative grid grid-cols-[4rem_1fr] gap-4 border-t-2 border-ink py-6 lg:min-h-[24vh] lg:py-8',
               'before:absolute before:-top-0.5 before:left-0 before:h-1.5 before:w-full before:origin-left before:scale-x-0 before:bg-signal before:transition-transform before:duration-300 before:ease-calm',
               active === index && 'lg:before:scale-x-100',
             )}

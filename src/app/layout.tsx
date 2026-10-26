@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
 import Script from 'next/script'
+import { RevealObserver } from '@/components/layout/reveal-observer'
 import { SiteFooter } from '@/components/layout/site-footer'
 import { SiteHeader } from '@/components/layout/site-header'
 import { siteUrl, umami } from '@/lib/site'
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
           {children}
         </main>
         <SiteFooter />
+        <RevealObserver />
         {umami.host && umami.websiteId && (
           // Umami bez cookies - nie wymaga banera zgód (ADR-008).
           <Script src={`${umami.host}/script.js`} data-website-id={umami.websiteId} strategy="lazyOnload" />

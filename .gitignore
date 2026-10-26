@@ -31,3 +31,7 @@ npm-debug.log*
 
 # lokalny stan Supabase CLI (supabase link)
 /supabase/.temp
+
+# Robocze pliki tasteskill: pomiary i oryginały rycin (przetworzone leżą w public/archiwum)
+.taste-skill/
+/assets/
