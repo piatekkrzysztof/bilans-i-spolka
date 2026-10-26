@@ -197,8 +197,7 @@ const note = node({
       simplify: true,
       options: {
         system: 'Piszesz krótką notkę do wyceny biura rachunkowego Bilans & Spółka: 2-3 zdania po polsku, spokojnym tonem. Wskaż, na co ta konkretna firma powinna zwrócić uwagę w najbliższych miesiącach (np. KSeF, zmiana biura, kadry). Nie podawaj żadnych kwot, stawek ani terminów innych niż w faktach. Nie udzielaj porad podatkowych i nie rekomenduj formy opodatkowania. Pisz zwykłym tekstem, bez nagłówków i list. Jeśli nie masz nic konkretnego do dodania, napisz jedno zdanie zapraszające na bezpłatną konsultację.',
-        maxTokens: 220,
-        temperature: 0.4,
+        maxTokens: 1024,
         includeMergedResponse: true,
       },
     },
