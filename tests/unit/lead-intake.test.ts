@@ -93,6 +93,7 @@ describe('intakeLead', () => {
     // 2090 zł (księgi, 21-40) + 314 zł VAT + 2 × 119 zł kadry = 2642 zł
     expect(payload.quote.monthlyNet).toBe(264_200)
     expect(call!.headers['idempotency-key']).toBe(payload.id)
+    expect(call!.headers['x-bs-webhook-key']).toBe('sekret')
     expect(verifySignature('sekret', call!.body, Number(call!.headers['x-bs-timestamp']), call!.headers['x-bs-signature']!)).toBe(true)
     expect([...repository.leads.values()][0]!.status).toBe('pending_delivery')
   })

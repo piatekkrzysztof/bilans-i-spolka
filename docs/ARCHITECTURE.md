@@ -154,6 +154,18 @@ pierwszym ekranie nie animują się wcale, a przy `prefers-reduced-motion` znika
 
 Każda zmiana przeszła axe (WCAG 2.2 AA) w e2e i budżet JS.
 
+### ADR-013: n8n Cloud bez Variables - sekret w Header Auth, HMAC kluczem z nagłówka
+Workflow n8n potrzebują sekretu webhooka w węźle Code (weryfikacja HMAC), a plan n8n Cloud nie ma Variables,
+Cloud blokuje `$env`, a węzeł Code nie widzi poświadczeń. Ciepło Południa rozwiązało to self-hosted n8n
+z `$env` - tu zostajemy na Cloud, bez serwera do utrzymania.
+
+API wysyła sekret dodatkowo w nagłówku `x-bs-webhook-key`. Webhook w n8n sprawdza go poświadczeniem Header Auth
+(zaszyfrowanym w n8n) i dopiero wtedy uruchamia workflow; węzeł Code liczy HMAC tym samym, już zweryfikowanym
+kluczem. Sekret nie pojawia się w workflow ani w jego eksporcie, a podpis dalej chroni treść i okno czasowe
+(5 minut). Koszt: sekret podróżuje w nagłówku, więc jego bezpieczeństwo opiera się na TLS - tak jak przy
+każdym kluczu API. Jawne ustawienia (adres Supabase, skrzynka testowa, nadawca, czat) są w węźle
+„Konfiguracja”. Przejście na self-hosted albo plan z Variables to zamiana jednego węzła, nie przebudowa.
+
 ## Co zmienić przy wzroście
 
 - Limiter i deduplikacja: Upstash Redis zamiast pamięci instancji.

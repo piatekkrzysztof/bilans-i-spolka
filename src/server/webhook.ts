@@ -31,6 +31,10 @@ export interface DeliveryResult {
 /**
  * Wysyła zdarzenie do n8n. Lead jest już zapisany w bazie, więc błąd tutaj nie gubi danych -
  * cron w n8n dociąga zdarzenia `pending_delivery` z outboxa. `Idempotency-Key` = id wyceny.
+ *
+ * `x-bs-webhook-key` niesie sam sekret: n8n Cloud bez Variables nie da węzłowi Code dostępu do sekretu,
+ * więc webhook sprawdza klucz poświadczeniem Header Auth (zaszyfrowanym w n8n), a węzeł Code liczy HMAC
+ * kluczem z już zweryfikowanego nagłówka. Podpis dalej chroni treść i okno czasowe (ADR-013).
  */
 export async function deliverWebhook(url: string, secret: string, idempotencyKey: string, payload: unknown): Promise<DeliveryResult> {
   const rawBody = JSON.stringify(payload)
@@ -43,6 +47,7 @@ export async function deliverWebhook(url: string, secret: string, idempotencyKey
         'x-bs-timestamp': String(timestamp),
         'x-bs-signature': signPayload(secret, rawBody, timestamp),
         'idempotency-key': idempotencyKey,
+        'x-bs-webhook-key': secret,
       },
       body: rawBody,
       signal: AbortSignal.timeout(4_000),
