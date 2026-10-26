@@ -34,7 +34,7 @@ Next.js 16 (App Router, Cache Components) · TypeScript strict · Tailwind CSS 4
 Motion · Zustand · React Hook Form + Zod · Sanity · Supabase (Postgres + RLS) · n8n · Cloudflare Turnstile ·
 Vitest · Playwright + axe · Lighthouse CI.
 
-Decyzje i ich uzasadnienie: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Decyzje i ich uzasadnienie: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Case study z wynikami i zrzutami: [docs/case-study](docs/case-study/README.md).
 
 ## Uruchomienie
 

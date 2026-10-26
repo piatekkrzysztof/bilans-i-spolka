@@ -218,6 +218,11 @@
   }
 }
 
+/* Druk i PDF wyceny (PDF.co w n8n drukuje /wycena/dokument): cała kartka w kolorze karty, bez szarego pasa pod nią. */
+@media print {
+  html, body { background: var(--color-surface); }
+}
+
 @utility container-page {
   width: 100%;
   max-width: var(--container-page);
