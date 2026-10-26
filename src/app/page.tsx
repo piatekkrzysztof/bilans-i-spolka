@@ -98,7 +98,7 @@ export default async function HomePage() {
       </section>
 
       {/* 2a. Bilans - nazwa biura dosłownie: karta, na której obie kolumny muszą się zgadzać. */}
-      <section className="container-page section-space grid items-start gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-20" aria-labelledby="bilans">
+      <section className="cv-auto container-page section-space grid items-start gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-20" aria-labelledby="bilans">
         <ArchivePlate image={ARCHIVE.balance} figure={1} sizes="(min-width: 1024px) 640px, 100vw" />
         <div className="grid content-start gap-8 lg:sticky lg:top-28">
           <h2 id="bilans" className="text-[2rem] leading-[0.95] text-ink md:text-2xl" data-reveal>
@@ -124,7 +124,7 @@ export default async function HomePage() {
       </section>
 
       {/* 3. Dla kogo */}
-      <section className="container-page section-space" aria-labelledby="dla-kogo">
+      <section className="cv-auto container-page section-space" aria-labelledby="dla-kogo">
         <SectionHeading id="dla-kogo" index="101" eyebrow="Dla kogo" title="Z czym przychodzą klienci." />
         <ul className="mt-12 grid gap-px border-2 border-ink bg-ink sm:grid-cols-2 lg:grid-cols-4">
           {AUDIENCES.map(item => (
@@ -141,7 +141,7 @@ export default async function HomePage() {
       </section>
 
       {/* 4. Jak wygląda współpraca */}
-      <section className="border-t border-rule bg-surface" aria-labelledby="miesiac">
+      <section className="cv-auto border-t border-rule bg-surface" aria-labelledby="miesiac">
         <div className="container-page section-space">
           <SectionHeading
             id="miesiac"
@@ -157,7 +157,7 @@ export default async function HomePage() {
       </section>
 
       {/* 5. KSeF - termin ustawowy, więc jedyne miejsce z taśmą ostrzegawczą. */}
-      <section className="bg-ink text-paper" aria-labelledby="ksef">
+      <section className="cv-auto bg-ink text-paper" aria-labelledby="ksef">
         <div aria-hidden="true" className="hazard h-3" />
         <div className="container-page grid items-end gap-10 py-16 lg:grid-cols-[1fr_auto] lg:py-20">
           <div>
@@ -179,7 +179,7 @@ export default async function HomePage() {
       </section>
 
       {/* 6. Zespół */}
-      <section className="container-page section-space" aria-labelledby="zespol">
+      <section className="cv-auto container-page section-space" aria-labelledby="zespol">
         <SectionHeading
           id="zespol"
           index="303"
@@ -206,7 +206,7 @@ export default async function HomePage() {
       </section>
 
       {/* 7. Opinie */}
-      <section className="border-y-2 border-ink bg-surface" aria-labelledby="opinie">
+      <section className="cv-auto border-y-2 border-ink bg-surface" aria-labelledby="opinie">
         <div className="container-page section-space">
           <SectionHeading id="opinie" index="404" eyebrow="Opinie" title="Klienci po pierwszym roku." />
           <ul className="mt-12 grid gap-px border-2 border-ink bg-ink md:grid-cols-3">
@@ -229,38 +229,32 @@ export default async function HomePage() {
       </section>
 
       {/* 8. Porównanie */}
-      <section className="container-page section-space" aria-labelledby="porownanie">
+      <section className="cv-auto container-page section-space" aria-labelledby="porownanie">
         <SectionHeading id="porownanie" index="505" eyebrow="Porównanie" title="My kontra typowe biuro." />
-        {/* Telefon: wiersze jako karty - tabela przewijana w bok wyglądała na uciętą. */}
-        <dl className="mt-10 grid gap-px border-2 border-ink bg-ink md:hidden">
-          {site.comparison.map(row => (
-            <div key={row.aspect} className="grid gap-3 bg-paper p-5" data-reveal>
-              <dt className="eyebrow">{row.aspect}</dt>
-              <dd className="grid gap-2 text-sm">
-                <span className="font-medium text-ink"><span aria-hidden="true" className="marker mr-2" /><span className="sr-only">Bilans &amp; Spółka: </span>{row.us}</span>
-                <span className="text-ink-muted"><span className="font-mono text-xs uppercase tracking-[0.06em]">Typowe biuro: </span>{row.typical}</span>
-              </dd>
-            </div>
-          ))}
-        </dl>
-        <div className="mt-12 hidden md:block" data-reveal>
-          <table className="w-full border-collapse border-2 border-ink text-left text-sm">
+        {/*
+          Jedna tabela: na telefonie wiersze układają się w karty samym CSS-em (tabela przewijana w bok wyglądała na uciętą),
+          bez drugiej kopii treści w HTML. Podpis „Typowe biuro:” widać tylko tam, gdzie nie ma nagłówka kolumny.
+        */}
+        <div className="mt-10 md:mt-12" data-reveal>
+          <table className="w-full border-collapse border-2 border-ink text-left text-sm max-md:block">
             <caption className="sr-only">Porównanie Bilans &amp; Spółka z typowym biurem rachunkowym</caption>
-            <thead className="bg-ink font-mono text-xs uppercase tracking-[0.08em] text-paper">
+            <thead className="bg-ink font-mono text-xs uppercase tracking-[0.08em] text-paper max-md:hidden">
               <tr>
                 <th scope="col" className="w-[22%] px-4 py-3 font-normal">Pozycja</th>
                 <th scope="col" className="border-l border-paper/40 px-4 py-3 font-bold">Bilans &amp; Spółka</th>
                 <th scope="col" className="border-l border-paper/40 px-4 py-3 font-normal">Typowe biuro</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="max-md:block">
               {site.comparison.map(row => (
-                <tr key={row.aspect} className="border-b border-ink align-top last:border-b-0">
-                  <th scope="row" className="px-4 py-4 font-mono text-xs font-bold uppercase tracking-[0.06em] text-ink">{row.aspect}</th>
-                  <td className="border-l border-ink bg-surface px-4 py-4 font-medium text-ink">
+                <tr key={row.aspect} className="border-b border-ink align-top last:border-b-0 max-md:grid max-md:gap-2 max-md:p-5">
+                  <th scope="row" className="px-4 py-4 font-mono text-xs font-bold uppercase tracking-[0.06em] text-ink max-md:p-0">{row.aspect}</th>
+                  <td className="border-l border-ink bg-surface px-4 py-4 font-medium text-ink max-md:border-0 max-md:bg-transparent max-md:p-0">
                     <span aria-hidden="true" className="marker mr-2" />{row.us}
                   </td>
-                  <td className="border-l border-ink px-4 py-4 text-ink-muted">{row.typical}</td>
+                  <td className="border-l border-ink px-4 py-4 text-ink-muted max-md:border-0 max-md:p-0">
+                    <span className="font-mono text-xs uppercase tracking-[0.06em] md:hidden">Typowe biuro: </span>{row.typical}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -269,7 +263,7 @@ export default async function HomePage() {
       </section>
 
       {/* 9. FAQ */}
-      <section className="border-t-2 border-ink bg-surface" aria-labelledby="faq">
+      <section className="cv-auto border-t-2 border-ink bg-surface" aria-labelledby="faq">
         <div className="container-page section-space grid gap-12 lg:grid-cols-[1fr_1.6fr]">
           <div className="grid content-start gap-10 lg:sticky lg:top-28 lg:self-start">
             <SectionHeading id="faq" index="606" eyebrow="Pytania" title="Zanim zadzwonisz." stacked />
@@ -280,7 +274,7 @@ export default async function HomePage() {
       </section>
 
       {/* 9a. Kraków - biuro na mapie miasta; ryciny pokazują miasto, nie siedzibę firmy. */}
-      <section className="container-page section-space" aria-labelledby="krakow">
+      <section className="cv-auto container-page section-space" aria-labelledby="krakow">
         <SectionHeading
           id="krakow"
           index="707"
@@ -310,7 +304,7 @@ export default async function HomePage() {
       </section>
 
       {/* 10. Końcowe CTA */}
-      <section className="bg-ink text-paper" aria-labelledby="cta">
+      <section className="cv-auto bg-ink text-paper" aria-labelledby="cta">
         <div className="container-page grid gap-10 py-20 lg:grid-cols-[1.5fr_1fr] lg:py-24">
           <div>
             <p className="eyebrow !text-paper">[ 20 min / wideo / bez zobowiązań ]</p>

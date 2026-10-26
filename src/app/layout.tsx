@@ -9,6 +9,7 @@ import './globals.css'
 
 // Własne podzbiory (scripts/build-fonts.py): łacina + polskie znaki, jeden plik na krój, wszystkie preloadowane
 // równolegle z CSS (ADR-010). Tekst: Inter 400-500, nagłówki: Inter 900 w wariancie display, dane: JetBrains Mono.
+// Mono też zostaje w preloadzie: próba bez niego (Lighthouse, mediana z 5) podniosła TBT o ~220 ms przy tym samym LCP.
 // Fallback metrics (adjustFontFallback) trzyma CLS przy zamianie fontu.
 const interText = localFont({
   variable: '--font-inter-text',

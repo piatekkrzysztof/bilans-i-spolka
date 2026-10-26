@@ -223,6 +223,16 @@
   html, body { background: var(--color-surface); }
 }
 
+/*
+ * Sekcje poniżej pierwszego ekranu: przeglądarka nie liczy ich stylu i układu, dopóki nie zbliżą się do widoku.
+ * Strona główna ma ~16 000 px na telefonie - bez tego pierwsze malowanie czekało na układ całości (LCP, ADR-010).
+ * `auto` w contain-intrinsic-size zapamiętuje prawdziwą wysokość po pierwszym wyrenderowaniu.
+ */
+@utility cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
 @utility container-page {
   width: 100%;
   max-width: var(--container-page);
