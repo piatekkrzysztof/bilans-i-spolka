@@ -48,7 +48,7 @@ export function Portrait({
     >
       {size !== 'sm' && (
         <>
-          <span aria-hidden="true" className="absolute left-3 top-3 font-mono text-[0.6875rem] uppercase tracking-[0.1em] text-paper/70">
+          <span aria-hidden="true" className="absolute left-3 top-3 font-mono text-xs uppercase tracking-[0.1em] text-paper/70">
             {code ?? 'Zespół'}
           </span>
           <span aria-hidden="true" className="absolute right-3 top-3 size-2.5 bg-signal" />

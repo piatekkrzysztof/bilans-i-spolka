@@ -26,7 +26,7 @@ export function SectionHeading({
   stacked?: boolean
 }) {
   return (
-    <header className={cn('grid gap-6 border-t-2 border-ink pt-5', !stacked && 'md:grid-cols-[10rem_1fr]', className)}>
+    <header className={cn('grid gap-6 border-t-2 border-ink pt-5', !stacked && 'md:grid-cols-[10rem_1fr]', className)} data-reveal>
       <div className="flex items-baseline justify-between gap-3 md:block">
         <p className="eyebrow">{eyebrow}</p>
         {index && (

@@ -81,7 +81,7 @@ export function QuoteSheet({
       {/* Pasek formularza: odwrócone kolory, tytuł i przełącznik jak na druku urzędowym. */}
       <header className="relative z-10 flex items-center justify-between gap-4 bg-ink py-2 pl-4 pr-2 text-paper">
         <p className="font-mono text-xs font-bold uppercase tracking-[0.1em]">{title}</p>
-        <div role="group" aria-label="Pokaż ceny" className="flex border border-paper/60 font-mono text-[0.6875rem] uppercase tracking-[0.08em]">
+        <div role="group" aria-label="Pokaż ceny" className="flex border border-paper/60 font-mono text-xs uppercase tracking-[0.08em]">
           {(['net', 'gross'] as const).map(mode => (
             <button
               key={mode}

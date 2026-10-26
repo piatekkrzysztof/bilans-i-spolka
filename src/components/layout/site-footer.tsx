@@ -64,7 +64,7 @@ export async function SiteFooter() {
           Bilans&amp;Spółka<span className="text-signal">.</span>
         </p>
 
-        <div className="flex flex-col gap-3 border-t-2 border-ink py-5 font-mono text-[0.6875rem] uppercase tracking-[0.06em] text-ink md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-3 border-t-2 border-ink py-5 font-mono text-xs uppercase tracking-[0.06em] text-ink md:flex-row md:items-center md:justify-between">
           <p>
             <span className="marker mr-2" aria-hidden="true" />
             <strong className="font-bold">Projekt koncepcyjny.</strong> Firma, zespół, opinie i liczby są fikcyjne.
