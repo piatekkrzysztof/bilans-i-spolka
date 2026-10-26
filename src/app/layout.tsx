@@ -7,8 +7,9 @@ import { SiteHeader } from '@/components/layout/site-header'
 import { siteUrl, umami } from '@/lib/site'
 import './globals.css'
 
-// Własne podzbiory (scripts/build-fonts.py): łacina + polskie znaki, jeden plik na krój (ADR-010). Preloadowane są
-// tylko kroje tekstu i nagłówków - mono w hero to drobne etykiety, a jego 30 kB odbierało pasmo CSS-owi na wolnym łączu. Tekst: Inter 400-500, nagłówki: Inter 900 w wariancie display, dane: JetBrains Mono.
+// Własne podzbiory (scripts/build-fonts.py): łacina + polskie znaki, jeden plik na krój, wszystkie preloadowane
+// równolegle z CSS (ADR-010). Tekst: Inter 400-500, nagłówki: Inter 900 w wariancie display, dane: JetBrains Mono.
+// Mono też zostaje w preloadzie: próba bez niego (Lighthouse, mediana z 5) podniosła TBT o ~220 ms przy tym samym LCP.
 // Fallback metrics (adjustFontFallback) trzyma CLS przy zamianie fontu.
 const interText = localFont({
   variable: '--font-inter-text',
@@ -28,7 +29,6 @@ const mono = localFont({
   variable: '--font-jetbrains-mono',
   src: [{ path: './fonts/jetbrains-mono.woff2', weight: '400 700', style: 'normal' }],
   display: 'swap',
-  preload: false,
   adjustFontFallback: false,
 })
 
